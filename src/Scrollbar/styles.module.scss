@@ -58,7 +58,7 @@
 	}
 
 	&:hover {
-		background: var(--bar-hover-color);
+		background: var(--bar-hover-color) !important;
 	}
 }
 
@@ -70,7 +70,7 @@
 	max-height: 100%;
 
 	&:hover {
-		background: var(--thumb-hover-color);
+		background: var(--thumb-hover-color) !important;
 	}
 }
 

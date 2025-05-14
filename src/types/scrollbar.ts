@@ -1,5 +1,6 @@
 export type ScrollbarProps = {
 	children: React.ReactNode
+	units?: string
 	contentPadding?: number
 	barWidth?: number
 	thumbWidth?: number

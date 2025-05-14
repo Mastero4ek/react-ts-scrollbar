@@ -5,10 +5,11 @@ import styles from './styles.module.scss'
 
 export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 	const {
+		units = 'px',
 		barShadow = 'none',
 		thumbShadow = 'none',
 		barColor = '#87ceeb',
-		thumbColor = '#000000',
+		thumbColor = 'rgba(0, 0, 0, 0.5)',
 		barBorderColor = 'transparent',
 		barBorderWidth = 0,
 		contentPadding = 10,
@@ -204,11 +205,11 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 		<div
 			className={styles.scrollbar_wrapper}
 			style={{
-				gridTemplate: `auto / 1fr ${barWidth}px`,
+				gridTemplate: `auto / 1fr ${barWidth}${units}`,
 			}}
 		>
 			<article
-				style={{ paddingRight: `${contentPadding}px` }}
+				style={{ paddingRight: `${contentPadding}${units}` }}
 				className={styles.scrollbar_content}
 				ref={contentRef}
 				{...props}
@@ -220,14 +221,14 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 				<div
 					className={styles.scrollbar}
 					style={{
-						borderRadius: `${barRadius}px`,
+						borderRadius: `${barRadius}${units}`,
 						boxShadow: `${barShadow}`,
 					}}
 				>
 					<div
 						className={styles.scrollbar_track_and_thumb}
 						style={{
-							width: `${barWidth}px`,
+							width: `${barWidth}${units}`,
 						}}
 					>
 						<div
@@ -236,11 +237,11 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 							onClick={handleTrackClick}
 							style={{
 								cursor: isDragging ? 'grabbing' : 'pointer',
-								width: `${barWidth}px`,
+								width: `${barWidth}${units}`,
 								background: `${barColor}`,
-								borderRadius: `${barRadius}px`,
+								borderRadius: `${barRadius}${units}`,
 								['--bar-hover-color' as string]: barHoverColor || barColor,
-								['--bar-border-width' as string]: `-${barBorderWidth}px`,
+								['--bar-border-width' as string]: `-${barBorderWidth}${units}`,
 								['--bar-border-color' as string]: barBorderColor,
 							}}
 						></div>
@@ -252,12 +253,12 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 							style={{
 								boxShadow: `${thumbShadow}`,
 								minHeight: `10%`,
-								height: `${thumbHeight}px`,
+								height: `${thumbHeight}${units}`,
 								cursor: isDragging ? 'grabbing' : 'grab',
 								background: `${thumbColor}`,
-								borderRadius: `${thumbRadius || barRadius}px`,
-								width: `${thumbWidth || barWidth}px`,
-								maxWidth: `${barWidth}px`,
+								borderRadius: `${thumbRadius || barRadius}${units}`,
+								width: `${thumbWidth || barWidth}${units}`,
+								maxWidth: `${barWidth}${units}`,
 								['--thumb-hover-color' as string]:
 									thumbHoverColor || thumbColor,
 							}}
