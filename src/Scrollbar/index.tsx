@@ -1,7 +1,13 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import './styles.css';
 
-import { ScrollbarProps } from '../types/scrollbar'
-import styles from './styles.module.scss'
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+
+import { ScrollbarProps } from '../types/scrollbar';
 
 export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 	const {
@@ -232,14 +238,14 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 
 	return (
 		<div
-			className={styles.scrollbar_wrapper}
+			className={'scrollbar_wrapper'}
 			style={{
 				gridTemplate: `auto / 1fr ${barWidth}${units}`,
 			}}
 		>
 			<article
 				{...props}
-				className={styles.scrollbar_content}
+				className={'scrollbar_content'}
 				ref={contentRef}
 				style={{
 					paddingRight: `${contentPadding}${units}`,
@@ -251,20 +257,20 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 
 			{isScrollable && (
 				<div
-					className={styles.scrollbar}
+					className={'scrollbar'}
 					style={{
 						borderRadius: `${barRadius}${units}`,
 						boxShadow: `${barShadow}`,
 					}}
 				>
 					<div
-						className={styles.scrollbar_track_and_thumb}
+						className={'scrollbar_track_and_thumb'}
 						style={{
 							width: `${barWidth}${units}`,
 						}}
 					>
 						<div
-							className={styles.scrollbar_track}
+							className={'scrollbar_track'}
 							ref={scrollTrackRef}
 							onClick={handleTrackClick}
 							style={{
@@ -279,7 +285,7 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 						></div>
 
 						<div
-							className={styles.scrollbar_thumb}
+							className={'scrollbar_thumb'}
 							ref={scrollThumbRef}
 							onMouseDown={handleThumbMousedown}
 							style={{

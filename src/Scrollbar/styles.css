@@ -45,21 +45,21 @@
 	top: 0;
 	height: 100%;
 	transition: all 0.15s ease;
+}
 
-	&::before {
-		content: '';
-		display: block;
-		position: absolute;
-		border-radius: inherit;
-		z-index: -1;
-		pointer-events: none;
-		background: var(--bar-border-color);
-		inset: var(--bar-border-width);
-	}
+.scrollbar_track::before {
+	content: '';
+	display: block;
+	position: absolute;
+	border-radius: inherit;
+	z-index: -1;
+	pointer-events: none;
+	background: var(--bar-border-color);
+	inset: var(--bar-border-width);
+}
 
-	&:hover {
-		background: var(--bar-hover-color) !important;
-	}
+.scrollbar_track::hover {
+	background: var(--bar-hover-color) !important;
 }
 
 .scrollbar_thumb {
@@ -68,10 +68,10 @@
 	transform: translateX(-50%);
 	transition: all 0.15s ease;
 	max-height: 100%;
+}
 
-	&:hover {
-		background: var(--thumb-hover-color) !important;
-	}
+.scrollbar_thumb::hover {
+	background: var(--thumb-hover-color) !important;
 }
 
 @keyframes fadeIn {
