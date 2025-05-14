@@ -12,6 +12,7 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 		barColor = '#87ceeb',
 		thumbColor = 'rgba(0, 0, 0, 0.5)',
 		barBorderColor = 'transparent',
+		contentHeight = 300,
 		barBorderWidth = 0,
 		contentPadding = 10,
 		barWidth = 12,
@@ -237,10 +238,13 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 			}}
 		>
 			<article
-				style={{ paddingRight: `${contentPadding}${units}` }}
+				{...props}
 				className={styles.scrollbar_content}
 				ref={contentRef}
-				{...props}
+				style={{
+					paddingRight: `${contentPadding}${units}`,
+					height: `${contentHeight}${units}`,
+				}}
 			>
 				{children}
 			</article>

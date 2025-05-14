@@ -1,6 +1,7 @@
 {
 	"name": "react-ts-scrollbar",
 	"version": "1.0.0",
+	"description": "A customizable scrollbar component for React applications",
 	"main": "./dist/cjs/index.js",
 	"module": "./dist/esm/index.mjs",
 	"types": "./dist/types/index.d.ts",
@@ -23,6 +24,23 @@
 		"dev": "vite",
 		"build:dev": "vite build",
 		"preview": "vite preview"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/yourusername/react-ts-scrollbar.git"
+	},
+	"keywords": [
+		"react",
+		"scrollbar",
+		"custom-scrollbar",
+		"typescript",
+		"react-component"
+	],
+	"author": "Your Name",
+	"license": "MIT",
+	"peerDependencies": {
+		"react": ">=16.8.0",
+		"react-dom": ">=16.8.0"
 	},
 	"devDependencies": {
 		"@types/node": "^20.0.0",
