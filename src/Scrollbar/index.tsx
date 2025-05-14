@@ -5,6 +5,7 @@ import styles from './styles.module.scss'
 
 export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 	const {
+		keepItBottom = false,
 		units = 'px',
 		barShadow = 'none',
 		thumbShadow = 'none',
@@ -26,6 +27,7 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 	const scrollTrackRef = useRef<HTMLDivElement>(null)
 	const scrollThumbRef = useRef<HTMLDivElement>(null)
 	const observer = useRef<ResizeObserver | null>(null)
+	const mutationObserver = useRef<MutationObserver | null>(null)
 
 	// States
 	const [initialScrollTop, setInitialScrollTop] = useState<number>(0)
@@ -52,6 +54,13 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 
 		setIsScrollable(shouldBeScrollable)
 	}
+
+	// Scroll to bottom
+	const scrollToBottom = useCallback(() => {
+		if (contentRef.current) {
+			contentRef.current.scrollTop = contentRef.current.scrollHeight
+		}
+	}, [])
 
 	// Click on the track to scroll
 	const handleTrackClick = useCallback(
@@ -168,6 +177,25 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 		},
 		[isDragging, scrollStartPosition, initialScrollTop]
 	)
+
+	// Handle content changes
+	useEffect(() => {
+		if (keepItBottom && contentRef.current) {
+			mutationObserver.current = new MutationObserver(() => {
+				scrollToBottom()
+			})
+
+			mutationObserver.current.observe(contentRef.current, {
+				childList: true,
+				subtree: true,
+				characterData: true,
+			})
+
+			return () => {
+				mutationObserver.current?.disconnect()
+			}
+		}
+	}, [keepItBottom, scrollToBottom])
 
 	// Resize the track
 	useEffect(() => {

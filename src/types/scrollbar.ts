@@ -14,4 +14,5 @@ export type ScrollbarProps = {
 	thumbShadow?: string
 	barBorderWidth?: number
 	barBorderColor?: string
+	keepItBottom?: boolean
 } & React.ComponentPropsWithoutRef<'div'>
