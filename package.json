@@ -1,6 +1,6 @@
 {
-	"name": "react-ts-scrollbar",
-	"version": "1.0.0",
+	"name": "react-typescript-scrollbar",
+	"version": "1.0.1",
 	"description": "A customizable scrollbar component for React applications",
 	"main": "./dist/cjs/index.js",
 	"module": "./dist/esm/index.mjs",
@@ -12,7 +12,9 @@
 		}
 	},
 	"files": [
-		"dist"
+		"dist",
+		"README.md",
+		"README.ru.md"
 	],
 	"scripts": {
 		"build:cjs": "tsc -p tsconfig.cjs.json",
@@ -27,16 +29,18 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/yourusername/react-ts-scrollbar.git"
+		"url": "git+https://github.com/Mastero4ek/react-ts-scrollbar/tree/main"
 	},
 	"keywords": [
 		"react",
 		"scrollbar",
 		"custom-scrollbar",
 		"typescript",
-		"react-component"
+		"react-component",
+		"scroll",
+		"ui"
 	],
-	"author": "Your Name",
+	"author": "mastero4ek",
 	"license": "MIT",
 	"peerDependencies": {
 		"react": ">=16.8.0",
@@ -56,5 +60,11 @@
 	},
 	"dependencies": {
 		"path": "^0.12.7"
+	},
+	"engines": {
+		"node": ">=14.0.0"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }
