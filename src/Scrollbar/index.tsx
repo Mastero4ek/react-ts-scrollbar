@@ -1,24 +1,23 @@
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-import { ScrollbarProps } from '../types/scrollbar';
-import styles from './styles.module.scss';
+import { ScrollbarProps } from '../types/scrollbar'
+import styles from './styles.module.scss'
 
 export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 	const {
-		contentPadding = 0,
-		barWidth = 16,
-		thumbWidth = 14,
+		barShadow = 'none',
+		thumbShadow = 'none',
 		barColor = '#87ceeb',
 		thumbColor = '#000000',
-		barHoverColor = '#3fb8e7',
-		thumbHoverColor = '#808080',
-		barRadius = 40,
-		thumbRadius = 20,
+		barBorderColor = 'transparent',
+		barBorderWidth = 0,
+		contentPadding = 10,
+		barWidth = 12,
+		barRadius = 10,
+		thumbRadius,
+		thumbWidth,
+		barHoverColor,
+		thumbHoverColor,
 	} = props
 
 	// Refs
@@ -218,7 +217,13 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 			</article>
 
 			{isScrollable && (
-				<div className={styles.scrollbar}>
+				<div
+					className={styles.scrollbar}
+					style={{
+						borderRadius: `${barRadius}px`,
+						boxShadow: `${barShadow}`,
+					}}
+				>
 					<div
 						className={styles.scrollbar_track_and_thumb}
 						style={{
@@ -234,7 +239,9 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 								width: `${barWidth}px`,
 								background: `${barColor}`,
 								borderRadius: `${barRadius}px`,
-								['--bar-hover-color' as string]: barHoverColor,
+								['--bar-hover-color' as string]: barHoverColor || barColor,
+								['--bar-border-width' as string]: `-${barBorderWidth}px`,
+								['--bar-border-color' as string]: barBorderColor,
 							}}
 						></div>
 
@@ -243,14 +250,16 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 							ref={scrollThumbRef}
 							onMouseDown={handleThumbMousedown}
 							style={{
+								boxShadow: `${thumbShadow}`,
 								minHeight: `10%`,
 								height: `${thumbHeight}px`,
 								cursor: isDragging ? 'grabbing' : 'grab',
 								background: `${thumbColor}`,
-								borderRadius: `${thumbRadius}px`,
-								width: `${thumbWidth}px`,
+								borderRadius: `${thumbRadius || barRadius}px`,
+								width: `${thumbWidth || barWidth}px`,
 								maxWidth: `${barWidth}px`,
-								['--thumb-hover-color' as string]: thumbHoverColor,
+								['--thumb-hover-color' as string]:
+									thumbHoverColor || thumbColor,
 							}}
 						></div>
 					</div>

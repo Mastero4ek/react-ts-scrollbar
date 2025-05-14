@@ -1,7 +1,6 @@
 .scrollbar_wrapper {
 	display: grid;
 	height: 100%;
-	overflow: hidden;
 	position: relative;
 }
 
@@ -47,8 +46,19 @@
 	height: 100%;
 	transition: all 0.15s ease;
 
+	&::before {
+		content: '';
+		display: block;
+		position: absolute;
+		border-radius: inherit;
+		z-index: -1;
+		pointer-events: none;
+		background: var(--bar-border-color);
+		inset: var(--bar-border-width);
+	}
+
 	&:hover {
-		background: var(--bar-hover-color) !important;
+		background: var(--bar-hover-color);
 	}
 }
 
@@ -56,12 +66,11 @@
 	position: absolute;
 	left: 50%;
 	transform: translateX(-50%);
-	right: 0;
 	transition: all 0.15s ease;
 	max-height: 100%;
 
 	&:hover {
-		background: var(--thumb-hover-color) !important;
+		background: var(--thumb-hover-color);
 	}
 }
 

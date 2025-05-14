@@ -12,6 +12,6 @@
 		"baseUrl": ".",
 		"rootDir": "./src"
 	},
-	"include": ["src"],
+	"include": ["src", "src/dev", "src/types"],
 	"exclude": ["dist", "node_modules", "src/dev"]
 }

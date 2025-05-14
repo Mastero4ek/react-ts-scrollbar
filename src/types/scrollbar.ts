@@ -9,4 +9,8 @@ export type ScrollbarProps = {
 	thumbHoverColor?: string
 	barRadius?: number
 	thumbRadius?: number
+	barShadow?: string
+	thumbShadow?: string
+	barBorderWidth?: number
+	barBorderColor?: string
 } & React.ComponentPropsWithoutRef<'div'>
