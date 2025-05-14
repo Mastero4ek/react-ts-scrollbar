@@ -1,7 +1,9 @@
+export const styles = `
 .scrollbar_wrapper {
 	display: grid;
 	height: 100%;
 	position: relative;
+	gap: 20rem;
 }
 
 .scrollbar_content {
@@ -80,5 +82,16 @@
 	}
 	to {
 		opacity: 1;
+	}
+}
+`
+
+// Function to inject styles into the document
+export const injectStyles = () => {
+	if (typeof document !== 'undefined') {
+		const styleElement = document.createElement('style')
+
+		styleElement.textContent = styles
+		document.head.appendChild(styleElement)
 	}
 }

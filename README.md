@@ -25,7 +25,6 @@ function App() {
 | Prop            | Type          | Default              | Description                                                      |
 | --------------- | ------------- | -------------------- | ---------------------------------------------------------------- |
 | style           | CSSProperties | {}                   | Custom styles for the scrollbar container                        |
-| className       | string        | undefined            | Custom class name for the scrollbar container                    |
 | children        | ReactNode     | undefined            | Content to be displayed inside the scrollbar                     |
 | keepItBottom    | boolean       | false                | Whether to keep the scrollbar at the bottom when content changes |
 | units           | string        | 'px'                 | CSS units to use for measurements                                |

@@ -1,12 +1,13 @@
 {
 	"name": "react-typescript-scrollbar",
-	"version": "1.0.1",
+	"version": "1.1.2",
 	"description": "A customizable scrollbar component for React applications",
 	"main": "./dist/cjs/index.js",
 	"module": "./dist/esm/index.mjs",
 	"types": "./dist/types/index.d.ts",
 	"exports": {
 		".": {
+			"types": "./dist/types/index.d.ts",
 			"require": "./dist/cjs/index.js",
 			"import": "./dist/esm/index.mjs"
 		}
@@ -19,7 +20,8 @@
 	"scripts": {
 		"build:cjs": "tsc -p tsconfig.cjs.json",
 		"build:esm": "tsc -p tsconfig.esm.json && npm run rename:esm",
-		"build": "npm run build:cjs && npm run build:esm",
+		"build:types": "tsc -p tsconfig.types.json",
+		"build": "npm run build:cjs && npm run build:esm && npm run build:types",
 		"clean": "rimraf dist",
 		"rename:esm": "/bin/zsh ./scripts/fix-mjs.sh",
 		"prepack": "npm run clean && npm run build",
@@ -29,7 +31,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Mastero4ek/react-ts-scrollbar/tree/main"
+		"url": "git+https://github.com/Mastero4ek/react-ts-scrollbar.git"
 	},
 	"keywords": [
 		"react",
@@ -54,7 +56,6 @@
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"rimraf": "^6.0.1",
-		"sass": "^1.69.0",
 		"typescript": "^5.8.3",
 		"vite": "^5.0.0"
 	},

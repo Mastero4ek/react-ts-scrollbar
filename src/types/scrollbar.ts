@@ -1,4 +1,5 @@
 export type ScrollbarProps = {
+	style?: React.CSSProperties
 	children: React.ReactNode
 	units?: string
 	contentPadding?: number
