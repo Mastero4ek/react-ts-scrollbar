@@ -1,1 +1,1 @@
-export * from './modules/myModule.js'
+export * from './Scrollbar'
