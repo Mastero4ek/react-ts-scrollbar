@@ -1,0 +1,42 @@
+{
+	"name": "react-ts-scrollbar",
+	"version": "1.0.0",
+	"main": "./dist/cjs/index.js",
+	"module": "./dist/esm/index.mjs",
+	"types": "./dist/types/index.d.ts",
+	"exports": {
+		".": {
+			"require": "./dist/cjs/index.js",
+			"import": "./dist/esm/index.mjs"
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build:cjs": "tsc -p tsconfig.cjs.json",
+		"build:esm": "tsc -p tsconfig.esm.json && npm run rename:esm",
+		"build": "npm run build:cjs && npm run build:esm",
+		"clean": "rimraf dist",
+		"rename:esm": "/bin/zsh ./scripts/fix-mjs.sh",
+		"prepack": "npm run clean && npm run build",
+		"dev": "vite",
+		"build:dev": "vite build",
+		"preview": "vite preview"
+	},
+	"devDependencies": {
+		"@types/node": "^20.0.0",
+		"@types/react": "^18.2.0",
+		"@types/react-dom": "^18.2.0",
+		"@vitejs/plugin-react": "^4.2.0",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"rimraf": "^6.0.1",
+		"sass": "^1.69.0",
+		"typescript": "^5.8.3",
+		"vite": "^5.0.0"
+	},
+	"dependencies": {
+		"path": "^0.12.7"
+	}
+}

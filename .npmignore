@@ -1,0 +1,4 @@
+scripts
+src
+src/dev
+vite.config.ts
