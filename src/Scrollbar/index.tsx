@@ -1,7 +1,12 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
-import { ScrollbarProps } from '../types/scrollbar'
-import { injectStyles } from './styles'
+import { ScrollbarProps } from '../types/scrollbar';
+import { injectStyles } from './styles';
 
 export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 	const {
@@ -22,6 +27,8 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 		thumbWidth,
 		barHoverColor,
 		thumbHoverColor,
+		onScrollTop,
+		onScrollBottom,
 	} = props
 
 	// Refs
@@ -39,6 +46,23 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 	const [scrollStartPosition, setScrollStartPosition] = useState<number | null>(
 		null
 	)
+
+	// Handle scroll position and trigger callbacks
+	const handleScroll = useCallback(() => {
+		if (!contentRef.current) return
+
+		const { scrollTop, scrollHeight, clientHeight } = contentRef.current
+		const isAtTop = scrollTop === 0
+		const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1
+
+		if (isAtTop && onScrollTop) {
+			onScrollTop()
+		}
+
+		if (isAtBottom && onScrollBottom) {
+			onScrollBottom()
+		}
+	}, [onScrollTop, onScrollBottom])
 
 	// Handle the resize of the track
 	const handleResize = (ref: HTMLDivElement, trackSize: number) => {
@@ -185,43 +209,97 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 		injectStyles()
 	}, [])
 
-	// Handle content changes
+	// Handle keepItBottom functionality
 	useEffect(() => {
-		if (keepItBottom && contentRef.current) {
+		if (contentRef.current && keepItBottom) {
+			const observer = new MutationObserver(() => {
+				requestAnimationFrame(() => {
+					scrollToBottom()
+				})
+			})
+
+			const resizeObserver = new ResizeObserver(() => {
+				requestAnimationFrame(() => {
+					scrollToBottom()
+				})
+			})
+
+			observer.observe(contentRef.current, {
+				childList: true,
+				attributes: true,
+				attributeFilter: ['style', 'class', 'height'],
+				subtree: true,
+				characterData: false,
+			})
+
+			resizeObserver.observe(contentRef.current)
+
+			return () => {
+				observer.disconnect()
+				resizeObserver.disconnect()
+			}
+		}
+	}, [keepItBottom, scrollToBottom])
+
+	// Handle content changes and resize observations
+	useEffect(() => {
+		if (contentRef.current) {
 			mutationObserver.current = new MutationObserver(() => {
-				scrollToBottom()
+				requestAnimationFrame(() => {
+					if (scrollTrackRef.current && contentRef.current) {
+						handleResize(
+							contentRef.current,
+							scrollTrackRef.current.clientHeight
+						)
+
+						handleThumbPosition()
+					}
+				})
 			})
 
 			mutationObserver.current.observe(contentRef.current, {
 				childList: true,
 				subtree: true,
 				characterData: true,
+				attributes: true,
+				attributeFilter: ['style', 'class', 'height'],
 			})
+
+			// Observe content size changes
+			observer.current = new ResizeObserver(() => {
+				requestAnimationFrame(() => {
+					if (scrollTrackRef.current && contentRef.current) {
+						handleResize(
+							contentRef.current,
+							scrollTrackRef.current.clientHeight
+						)
+
+						handleThumbPosition()
+					}
+				})
+			})
+
+			observer.current.observe(contentRef.current)
 
 			return () => {
 				mutationObserver.current?.disconnect()
+				observer.current?.disconnect()
 			}
 		}
-	}, [keepItBottom, scrollToBottom])
+	}, [handleResize, handleThumbPosition])
 
-	// Resize the track
+	// Handle scroll events
 	useEffect(() => {
-		if (contentRef.current && scrollTrackRef.current) {
-			const ref = contentRef.current
-			const { clientHeight: trackSize } = scrollTrackRef.current
-
-			observer.current = new ResizeObserver(() => {
-				handleResize(ref, trackSize)
-			})
-			observer.current.observe(ref)
-			ref.addEventListener('scroll', handleThumbPosition)
+		if (contentRef.current) {
+			contentRef.current.addEventListener('scroll', handleThumbPosition)
+			contentRef.current.addEventListener('scroll', handleScroll)
 
 			return () => {
-				observer.current?.unobserve(ref)
-				ref.removeEventListener('scroll', handleThumbPosition)
+				contentRef.current?.removeEventListener('scroll', handleThumbPosition)
+				contentRef.current?.removeEventListener('scroll', handleScroll)
 			}
 		}
-	}, [])
+	}, [handleScroll, handleThumbPosition])
 
 	// Handle mouse events
 	useEffect(() => {

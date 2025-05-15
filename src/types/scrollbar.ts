@@ -17,4 +17,6 @@ export type ScrollbarProps = {
 	barBorderWidth?: number
 	barBorderColor?: string
 	keepItBottom?: boolean
+	onScrollTop?: () => void
+	onScrollBottom?: () => void
 } & React.ComponentPropsWithoutRef<'div'>

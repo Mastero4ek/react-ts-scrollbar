@@ -25,10 +25,6 @@ export const styles = `
 	grid-template: 1fr / 1fr;
 	place-items: center;
 	height: 100%;
-	position: absolute;
-	right: 0;
-	top: 50%;
-	transform: translateY(-50%);
 	opacity: 0;
 	animation: fadeIn 0.5s forwards;
 }
