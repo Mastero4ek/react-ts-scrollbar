@@ -1,6 +1,20 @@
 # React TypeScript Scrollbar
 
-A customizable scrollbar component for React applications built with TypeScript.
+A customizable scrollbar component for React applications built with TypeScript. This component provides a modern, flexible, and easy-to-use scrollbar solution with full TypeScript support.
+
+## Features
+
+- 🎨 Highly customizable scrollbar styling
+- 📦 TypeScript support with full type definitions
+- 🔄 ESM and CommonJS builds
+- ⚛️ React 16.8+ support
+- 🚀 Smooth scrolling behavior
+- 🖱️ Track click to scroll
+- 🎯 Thumb drag to scroll
+- 📐 Auto-resize handling
+- 🔒 Optional bottom scroll lock
+- 🎯 Zero dependencies
+- 📱 Responsive design
 
 ## Installation
 
@@ -8,15 +22,19 @@ A customizable scrollbar component for React applications built with TypeScript.
 npm install react-ts-scrollbar
 # or
 yarn add react-ts-scrollbar
+# or
+pnpm add react-ts-scrollbar
 ```
 
-## Usage
+## Quick Start
 
 ```tsx
 import { Scrollbar } from 'react-ts-scrollbar'
 
 function App() {
-	return <Scrollbar>{/* Your content here */}</Scrollbar>
+	return (
+		<Scrollbar style={{ height: '400px' }}>{/* Your content here */}</Scrollbar>
+	)
 }
 ```
 
@@ -43,17 +61,45 @@ function App() {
 | thumbHoverColor | string        | undefined            | Background color of the scrollbar thumb on hover                 |
 | contentHeight   | number        | 300                  | Fixed height of the content area                                 |
 
-## Features
+## Advanced Usage
 
-- Customizable scrollbar styling
-- TypeScript support
-- ESM and CommonJS builds
-- React 16.8+ support
-- Smooth scrolling
-- Track click to scroll
-- Thumb drag to scroll
-- Auto-resize handling
-- Optional bottom scroll lock
+### Custom Styling Example
+
+```tsx
+import { Scrollbar } from 'react-ts-scrollbar'
+
+function CustomScrollbar() {
+	return (
+		<Scrollbar
+			style={{ height: '500px', width: '100%' }}
+			barColor='#f0f0f0'
+			thumbColor='#888'
+			barWidth={8}
+			thumbWidth={6}
+			barRadius={4}
+			thumbRadius={4}
+			barHoverColor='#e0e0e0'
+			thumbHoverColor='#666'
+		>
+			{/* Your content here */}
+		</Scrollbar>
+	)
+}
+```
+
+### With Bottom Lock
+
+```tsx
+import { Scrollbar } from 'react-ts-scrollbar'
+
+function ChatScrollbar() {
+	return (
+		<Scrollbar keepItBottom={true} style={{ height: '400px' }}>
+			{/* Chat messages */}
+		</Scrollbar>
+	)
+}
+```
 
 ## Development
 
@@ -66,8 +112,22 @@ npm run dev
 
 # Build the package
 npm run build
+
+# Preview production build
+npm run preview
 ```
+
+## Browser Support
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-MIT
+MIT © [mastero4ek](https://github.com/Mastero4ek)
