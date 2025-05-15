@@ -224,11 +224,20 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 				})
 			})
 
+			// Observe main component attributes
 			observer.observe(contentRef.current, {
-				childList: true,
 				attributes: true,
 				attributeFilter: ['style', 'class', 'height'],
+				subtree: false,
+				childList: false,
+				characterData: false,
+			})
+
+			// Observe child elements changes
+			observer.observe(contentRef.current, {
+				childList: true,
 				subtree: true,
+				attributes: false,
 				characterData: false,
 			})
 
