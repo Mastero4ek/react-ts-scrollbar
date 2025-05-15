@@ -1,12 +1,7 @@
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-import { ScrollbarProps } from '../types/scrollbar';
-import { injectStyles } from './styles';
+import { ScrollbarProps } from '../types/scrollbar'
+import { injectStyles } from './styles'
 
 export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 	const {

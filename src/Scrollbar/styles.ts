@@ -56,7 +56,7 @@ export const styles = `
 	inset: var(--bar-border-width);
 }
 
-.scrollbar_track::hover {
+.scrollbar_track:hover {
 	background: var(--bar-hover-color) !important;
 }
 
@@ -68,7 +68,7 @@ export const styles = `
 	max-height: 100%;
 }
 
-.scrollbar_thumb::hover {
+.scrollbar_thumb:hover {
 	background: var(--thumb-hover-color) !important;
 }
 
