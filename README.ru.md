@@ -60,6 +60,8 @@ function App() {
 | barHoverColor   | string        | undefined            | Цвет фона трека при наведении                             |
 | thumbHoverColor | string        | undefined            | Цвет фона ползунка при наведении                          |
 | contentHeight   | number        | 300                  | Фиксированная высота области контента                     |
+| onScrollTop     | () => void    | undefined            | Функция обратного вызова при прокрутке до верха           |
+| onScrollBottom  | () => void    | undefined            | Функция обратного вызова при прокрутке до низа            |
 
 ## Расширенное использование
 

@@ -60,6 +60,8 @@ function App() {
 | barHoverColor   | string        | undefined            | Background color of the scrollbar track on hover                 |
 | thumbHoverColor | string        | undefined            | Background color of the scrollbar thumb on hover                 |
 | contentHeight   | number        | 300                  | Fixed height of the content area                                 |
+| onScrollTop     | () => void    | undefined            | Callback function triggered when scrolling to the top            |
+| onScrollBottom  | () => void    | undefined            | Callback function triggered when scrolling to the bottom         |
 
 ## Advanced Usage
 
