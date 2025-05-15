@@ -1,10 +1,11 @@
 {
 	"name": "react-typescript-scrollbar",
-	"version": "1.1.6",
+	"version": "1.1.7",
 	"description": "A customizable scrollbar component for React applications",
 	"main": "./dist/cjs/index.js",
 	"module": "./dist/esm/index.mjs",
 	"types": "./dist/types/index.d.ts",
+	"sideEffects": false,
 	"exports": {
 		".": {
 			"types": "./dist/types/index.d.ts",
@@ -18,15 +19,15 @@
 		"README.ru.md"
 	],
 	"scripts": {
-		"build:cjs": "tsc -p tsconfig.cjs.json",
-		"build:esm": "tsc -p tsconfig.esm.json && npm run rename:esm",
+		"build:cjs": "tsc -p tsconfig.cjs.json && terser ./dist/cjs/index.js -o ./dist/cjs/index.js --compress --mangle",
+		"build:esm": "tsc -p tsconfig.esm.json && npm run rename:esm && terser ./dist/esm/index.mjs -o ./dist/esm/index.mjs --compress --mangle",
 		"build:types": "tsc -p tsconfig.types.json",
 		"build": "npm run build:cjs && npm run build:esm && npm run build:types",
 		"clean": "rimraf dist",
 		"rename:esm": "/bin/zsh ./scripts/fix-mjs.sh",
 		"prepack": "npm run clean && npm run build",
-		"dev": "vite",
-		"build:dev": "vite build",
+		"dev": "tsc -p tsconfig.dev.json && vite",
+		"build:dev": "tsc -p tsconfig.dev.json && vite build",
 		"preview": "vite preview"
 	},
 	"repository": {
@@ -46,16 +47,17 @@
 	"license": "MIT",
 	"peerDependencies": {
 		"react": ">=16.8.0",
-		"react-dom": ">=16.8.0"
+		"react-dom": ">=16.8.0",
+		"@types/react": "^18.2.0",
+		"@types/react-dom": "^18.2.0"
 	},
 	"devDependencies": {
 		"@types/node": "^20.0.0",
-		"@types/react": "^18.2.0",
-		"@types/react-dom": "^18.2.0",
 		"@vitejs/plugin-react": "^4.2.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"rimraf": "^6.0.1",
+		"terser": "^5.29.2",
 		"typescript": "^5.8.3",
 		"vite": "^5.0.0"
 	},
