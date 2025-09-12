@@ -26,7 +26,7 @@ export const styles = `
 	place-items: center;
 	height: 100%;
 	opacity: 0;
-	animation: fadeIn 0.5s forwards;
+	
 }
 
 .scrollbar_track_and_thumb {
@@ -42,7 +42,7 @@ export const styles = `
 	position: absolute;
 	top: 0;
 	height: 100%;
-	transition: all 0.15s ease;
+
 }
 
 .scrollbar_track::before {
@@ -64,7 +64,7 @@ export const styles = `
 	position: absolute;
 	left: 50%;
 	transform: translateX(-50%);
-	transition: all 0.15s ease;
+
 	max-height: 100%;
 }
 

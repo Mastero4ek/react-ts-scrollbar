@@ -46,6 +46,8 @@ function App() {
 | children        | ReactNode     | undefined            | Content to be displayed inside the scrollbar                     |
 | keepItBottom    | boolean       | false                | Whether to keep the scrollbar at the bottom when content changes |
 | units           | string        | 'px'                 | CSS units to use for measurements                                |
+| barTransition   | number        | 0                    | Transition duration in seconds for the scrollbar track           |
+| thumbTransition | number        | 0                    | Transition duration in seconds for the scrollbar thumb           |
 | barShadow       | string        | 'none'               | CSS shadow for the scrollbar track                               |
 | thumbShadow     | string        | 'none'               | CSS shadow for the scrollbar thumb                               |
 | barColor        | string        | '#87ceeb'            | Background color of the scrollbar track                          |
@@ -82,8 +84,30 @@ function CustomScrollbar() {
 			thumbRadius={4}
 			barHoverColor='#e0e0e0'
 			thumbHoverColor='#666'
+			barTransition={0.2}
+			thumbTransition={0.15}
 		>
 			{/* Your content here */}
+		</Scrollbar>
+	)
+}
+```
+
+### With Smooth Transitions
+
+```tsx
+import { Scrollbar } from 'react-ts-scrollbar'
+
+function SmoothScrollbar() {
+	return (
+		<Scrollbar
+			style={{ height: '400px' }}
+			barTransition={0.3}
+			thumbTransition={0.2}
+			barHoverColor='#4a90e2'
+			thumbHoverColor='#2c5aa0'
+		>
+			{/* Content with smooth hover effects */}
 		</Scrollbar>
 	)
 }

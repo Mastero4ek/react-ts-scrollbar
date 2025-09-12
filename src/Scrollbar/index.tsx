@@ -1,18 +1,15 @@
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-import { ScrollbarProps } from '../types/scrollbar';
-import { injectStyles } from './styles';
+import { ScrollbarProps } from '../types/scrollbar'
+import { injectStyles } from './styles'
 
 export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 	const {
 		style,
 		keepItBottom = false,
 		units = 'px',
+		barTransition = 0,
+		thumbTransition = 0,
 		barShadow = 'none',
 		thumbShadow = 'none',
 		barColor = '#87ceeb',
@@ -344,6 +341,7 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 					borderRadius: `${barRadius}${units}`,
 					boxShadow: `${barShadow}`,
 					display: isScrollable ? 'block' : 'none',
+					animation: `fadeIn ${barTransition}s forwards`,
 				}}
 			>
 				<div
@@ -381,6 +379,7 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 							width: `${thumbWidth || barWidth}${units}`,
 							maxWidth: `${barWidth}${units}`,
 							['--thumb-hover-color' as string]: thumbHoverColor || thumbColor,
+							transition: `all ${thumbTransition}s ease`,
 						}}
 					></div>
 				</div>

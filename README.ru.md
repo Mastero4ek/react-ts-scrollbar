@@ -46,6 +46,8 @@ function App() {
 | children        | ReactNode     | undefined            | Контент для отображения внутри скроллбара                 |
 | keepItBottom    | boolean       | false                | Сохранять ли скроллбар внизу при изменении контента       |
 | units           | string        | 'px'                 | CSS-единицы для измерений                                 |
+| barTransition   | number        | 0                    | Длительность перехода в секундах для трека скроллбара     |
+| thumbTransition | number        | 0                    | Длительность перехода в секундах для ползунка скроллбара  |
 | barShadow       | string        | 'none'               | CSS-тень для трека скроллбара                             |
 | thumbShadow     | string        | 'none'               | CSS-тень для ползунка скроллбара                          |
 | barColor        | string        | '#87ceeb'            | Цвет фона трека скроллбара                                |
@@ -82,8 +84,30 @@ function CustomScrollbar() {
 			thumbRadius={4}
 			barHoverColor='#e0e0e0'
 			thumbHoverColor='#666'
+			barTransition={0.2}
+			thumbTransition={0.15}
 		>
 			{/* Ваш контент здесь */}
+		</Scrollbar>
+	)
+}
+```
+
+### С плавными переходами
+
+```tsx
+import { Scrollbar } from 'react-ts-scrollbar'
+
+function SmoothScrollbar() {
+	return (
+		<Scrollbar
+			style={{ height: '400px' }}
+			barTransition={0.3}
+			thumbTransition={0.2}
+			barHoverColor='#4a90e2'
+			thumbHoverColor='#2c5aa0'
+		>
+			{/* Контент с плавными эффектами при наведении */}
 		</Scrollbar>
 	)
 }
