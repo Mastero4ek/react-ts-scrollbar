@@ -1,7 +1,12 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
-import { ScrollbarProps } from '../types/scrollbar'
-import { injectStyles } from './styles'
+import { ScrollbarProps } from '../types/scrollbar';
+import { injectStyles } from './styles';
 
 export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 	const {
@@ -71,7 +76,7 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 
 		setThumbHeight(newThumbHeight)
 
-		const shouldBeScrollable = scrollHeight !== clientHeight
+		const shouldBeScrollable = scrollHeight > clientHeight + 1
 
 		setIsScrollable(shouldBeScrollable)
 	}
@@ -219,7 +224,6 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 				})
 			})
 
-			// Observe main component attributes
 			observer.observe(contentRef.current, {
 				attributes: true,
 				attributeFilter: ['style', 'class', 'height'],
@@ -228,7 +232,6 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 				characterData: false,
 			})
 
-			// Observe child elements changes
 			observer.observe(contentRef.current, {
 				childList: true,
 				subtree: true,
@@ -255,7 +258,6 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 							contentRef.current,
 							scrollTrackRef.current.clientHeight
 						)
-
 						handleThumbPosition()
 					}
 				})
@@ -266,10 +268,9 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 				subtree: true,
 				characterData: true,
 				attributes: true,
-				attributeFilter: ['style', 'class', 'height'],
+				attributeFilter: ['style', 'class', 'height', 'width'],
 			})
 
-			// Observe content size changes
 			observer.current = new ResizeObserver(() => {
 				requestAnimationFrame(() => {
 					if (scrollTrackRef.current && contentRef.current) {
@@ -337,55 +338,53 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 				{children}
 			</article>
 
-			{isScrollable && (
+			<div
+				className='scrollbar'
+				style={{
+					borderRadius: `${barRadius}${units}`,
+					boxShadow: `${barShadow}`,
+					display: isScrollable ? 'block' : 'none',
+				}}
+			>
 				<div
-					className='scrollbar'
+					className='scrollbar_track_and_thumb'
 					style={{
-						borderRadius: `${barRadius}${units}`,
-						boxShadow: `${barShadow}`,
+						width: `${barWidth}${units}`,
 					}}
 				>
 					<div
-						className='scrollbar_track_and_thumb'
+						className='scrollbar_track'
+						ref={scrollTrackRef}
+						onClick={handleTrackClick}
 						style={{
+							cursor: isDragging ? 'grabbing' : 'pointer',
 							width: `${barWidth}${units}`,
+							background: `${barColor}`,
+							borderRadius: `${barRadius}${units}`,
+							['--bar-hover-color' as string]: barHoverColor || barColor,
+							['--bar-border-width' as string]: `-${barBorderWidth}${units}`,
+							['--bar-border-color' as string]: barBorderColor,
 						}}
-					>
-						<div
-							className='scrollbar_track'
-							ref={scrollTrackRef}
-							onClick={handleTrackClick}
-							style={{
-								cursor: isDragging ? 'grabbing' : 'pointer',
-								width: `${barWidth}${units}`,
-								background: `${barColor}`,
-								borderRadius: `${barRadius}${units}`,
-								['--bar-hover-color' as string]: barHoverColor || barColor,
-								['--bar-border-width' as string]: `-${barBorderWidth}${units}`,
-								['--bar-border-color' as string]: barBorderColor,
-							}}
-						></div>
+					></div>
 
-						<div
-							className='scrollbar_thumb'
-							ref={scrollThumbRef}
-							onMouseDown={handleThumbMousedown}
-							style={{
-								boxShadow: `${thumbShadow}`,
-								minHeight: `10%`,
-								height: `${thumbHeight}${units}`,
-								cursor: isDragging ? 'grabbing' : 'grab',
-								background: `${thumbColor}`,
-								borderRadius: `${thumbRadius || barRadius}${units}`,
-								width: `${thumbWidth || barWidth}${units}`,
-								maxWidth: `${barWidth}${units}`,
-								['--thumb-hover-color' as string]:
-									thumbHoverColor || thumbColor,
-							}}
-						></div>
-					</div>
+					<div
+						className='scrollbar_thumb'
+						ref={scrollThumbRef}
+						onMouseDown={handleThumbMousedown}
+						style={{
+							boxShadow: `${thumbShadow}`,
+							minHeight: `10%`,
+							height: `${thumbHeight}${units}`,
+							cursor: isDragging ? 'grabbing' : 'grab',
+							background: `${thumbColor}`,
+							borderRadius: `${thumbRadius || barRadius}${units}`,
+							width: `${thumbWidth || barWidth}${units}`,
+							maxWidth: `${barWidth}${units}`,
+							['--thumb-hover-color' as string]: thumbHoverColor || thumbColor,
+						}}
+					></div>
 				</div>
-			)}
+			</div>
 		</div>
 	)
 }
