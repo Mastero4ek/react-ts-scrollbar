@@ -13,6 +13,7 @@ A customizable scrollbar component for React applications built with TypeScript.
 - 🎯 Thumb drag to scroll
 - 📐 Auto-resize handling
 - 🔒 Optional bottom scroll lock
+- 🖼️ Custom thumb image support
 - 🎯 Zero dependencies
 - 📱 Responsive design
 
@@ -40,30 +41,33 @@ function App() {
 
 ## Props
 
-| Prop            | Type          | Default              | Description                                                      |
-| --------------- | ------------- | -------------------- | ---------------------------------------------------------------- |
-| style           | CSSProperties | {}                   | Custom styles for the scrollbar container                        |
-| children        | ReactNode     | undefined            | Content to be displayed inside the scrollbar                     |
-| keepItBottom    | boolean       | false                | Whether to keep the scrollbar at the bottom when content changes |
-| units           | string        | 'px'                 | CSS units to use for measurements                                |
-| barTransition   | number        | 0                    | Transition duration in seconds for the scrollbar track           |
-| thumbTransition | number        | 0                    | Transition duration in seconds for the scrollbar thumb           |
-| barShadow       | string        | 'none'               | CSS shadow for the scrollbar track                               |
-| thumbShadow     | string        | 'none'               | CSS shadow for the scrollbar thumb                               |
-| barColor        | string        | '#87ceeb'            | Background color of the scrollbar track                          |
-| thumbColor      | string        | 'rgba(0, 0, 0, 0.5)' | Background color of the scrollbar thumb                          |
-| barBorderColor  | string        | 'transparent'        | Border color of the scrollbar track                              |
-| barBorderWidth  | number        | 0                    | Border width of the scrollbar track                              |
-| contentPadding  | number        | 10                   | Padding of the content area                                      |
-| barWidth        | number        | 12                   | Width of the scrollbar track                                     |
-| barRadius       | number        | 10                   | Border radius of the scrollbar track                             |
-| thumbRadius     | number        | undefined            | Border radius of the scrollbar thumb (defaults to barRadius)     |
-| thumbWidth      | number        | undefined            | Width of the scrollbar thumb (defaults to barWidth)              |
-| barHoverColor   | string        | undefined            | Background color of the scrollbar track on hover                 |
-| thumbHoverColor | string        | undefined            | Background color of the scrollbar thumb on hover                 |
-| contentHeight   | number        | 300                  | Fixed height of the content area                                 |
-| onScrollTop     | () => void    | undefined            | Callback function triggered when scrolling to the top            |
-| onScrollBottom  | () => void    | undefined            | Callback function triggered when scrolling to the bottom         |
+| Prop             | Type          | Default              | Description                                                      |
+| ---------------- | ------------- | -------------------- | ---------------------------------------------------------------- |
+| style            | CSSProperties | {}                   | Custom styles for the scrollbar container                        |
+| children         | ReactNode     | undefined            | Content to be displayed inside the scrollbar                     |
+| keepItBottom     | boolean       | false                | Whether to keep the scrollbar at the bottom when content changes |
+| units            | string        | 'px'                 | CSS units to use for measurements                                |
+| barTransition    | number        | 0                    | Transition duration in seconds for the scrollbar track           |
+| thumbTransition  | number        | 0                    | Transition duration in seconds for the scrollbar thumb           |
+| barShadow        | string        | 'none'               | CSS shadow for the scrollbar track                               |
+| thumbShadow      | string        | 'none'               | CSS shadow for the scrollbar thumb                               |
+| barColor         | string        | '#87ceeb'            | Background color of the scrollbar track                          |
+| thumbColor       | string        | 'rgba(0, 0, 0, 0.5)' | Background color of the scrollbar thumb                          |
+| barBorderColor   | string        | 'transparent'        | Border color of the scrollbar track                              |
+| barBorderWidth   | number        | 0                    | Border width of the scrollbar track                              |
+| contentPadding   | number        | 10                   | Padding of the content area                                      |
+| barWidth         | number        | 12                   | Width of the scrollbar track                                     |
+| barRadius        | number        | 10                   | Border radius of the scrollbar track                             |
+| thumbRadius      | number        | undefined            | Border radius of the scrollbar thumb (defaults to barRadius)     |
+| thumbWidth       | number        | undefined            | Width of the scrollbar thumb (defaults to barWidth)              |
+| barHoverColor    | string        | undefined            | Background color of the scrollbar track on hover                 |
+| thumbHoverColor  | string        | undefined            | Background color of the scrollbar thumb on hover                 |
+| thumbImage       | string        | null                 | URL or path to custom image for the scrollbar thumb              |
+| thumbImageWidth  | number        | 10                   | Width of the custom thumb image                                  |
+| thumbImageHeight | number        | 10                   | Height of the custom thumb image                                 |
+| contentHeight    | number        | 300                  | Fixed height of the content area                                 |
+| onScrollTop      | () => void    | undefined            | Callback function triggered when scrolling to the top            |
+| onScrollBottom   | () => void    | undefined            | Callback function triggered when scrolling to the bottom         |
 
 ## Advanced Usage
 
@@ -122,6 +126,26 @@ function ChatScrollbar() {
 	return (
 		<Scrollbar keepItBottom={true} style={{ height: '400px' }}>
 			{/* Chat messages */}
+		</Scrollbar>
+	)
+}
+```
+
+### With Custom Thumb Image
+
+```tsx
+import { Scrollbar } from 'react-ts-scrollbar'
+
+function ImageThumbScrollbar() {
+	return (
+		<Scrollbar
+			style={{ height: '400px' }}
+			thumbImage='/path/to/your/thumb-image.png'
+			thumbImageWidth={20}
+			thumbImageHeight={20}
+			barWidth={16}
+		>
+			{/* Content with custom thumb image */}
 		</Scrollbar>
 	)
 }

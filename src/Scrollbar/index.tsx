@@ -1,7 +1,12 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
-import { ScrollbarProps } from '../types/scrollbar'
-import { injectStyles } from './styles'
+import { ScrollbarProps } from '../types/scrollbar';
+import { injectStyles } from './styles';
 
 export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 	const {
@@ -24,6 +29,9 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 		thumbWidth,
 		barHoverColor,
 		thumbHoverColor,
+		thumbImage = null,
+		thumbImageWidth = 10,
+		thumbImageHeight = 10,
 		onScrollTop,
 		onScrollBottom,
 	} = props
@@ -365,23 +373,40 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 						}}
 					></div>
 
-					<div
-						className='scrollbar_thumb'
-						ref={scrollThumbRef}
-						onMouseDown={handleThumbMousedown}
-						style={{
-							boxShadow: `${thumbShadow}`,
-							minHeight: `10%`,
-							height: `${thumbHeight}${units}`,
-							cursor: isDragging ? 'grabbing' : 'grab',
-							background: `${thumbColor}`,
-							borderRadius: `${thumbRadius || barRadius}${units}`,
-							width: `${thumbWidth || barWidth}${units}`,
-							maxWidth: `${barWidth}${units}`,
-							['--thumb-hover-color' as string]: thumbHoverColor || thumbColor,
-							transition: `all ${thumbTransition}s ease`,
-						}}
-					></div>
+					{thumbImage ? (
+						<div
+							ref={scrollThumbRef}
+							onMouseDown={handleThumbMousedown}
+							className='scrollbar_thumb_image'
+							style={{
+								width: `${thumbImageWidth}${units}`,
+								height: `${thumbImageHeight}${units}`,
+								cursor: isDragging ? 'grabbing' : 'grab',
+								transition: `all ${thumbTransition}s ease`,
+							}}
+						>
+							<img src={thumbImage} alt='thumb' />
+						</div>
+					) : (
+						<div
+							className='scrollbar_thumb'
+							ref={scrollThumbRef}
+							onMouseDown={handleThumbMousedown}
+							style={{
+								boxShadow: `${thumbShadow}`,
+								minHeight: `10%`,
+								height: `${thumbHeight}${units}`,
+								cursor: isDragging ? 'grabbing' : 'grab',
+								background: `${thumbColor}`,
+								borderRadius: `${thumbRadius || barRadius}${units}`,
+								width: `${thumbWidth || barWidth}${units}`,
+								maxWidth: `${barWidth}${units}`,
+								['--thumb-hover-color' as string]:
+									thumbHoverColor || thumbColor,
+								transition: `all ${thumbTransition}s ease`,
+							}}
+						></div>
+					)}
 				</div>
 			</div>
 		</div>

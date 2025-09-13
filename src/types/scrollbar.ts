@@ -18,6 +18,9 @@ export type ScrollbarProps = {
 	thumbShadow?: string
 	barBorderWidth?: number
 	barBorderColor?: string
+	thumbImage?: string
+	thumbImageWidth?: number
+	thumbImageHeight?: number
 	keepItBottom?: boolean
 	onScrollTop?: () => void
 	onScrollBottom?: () => void

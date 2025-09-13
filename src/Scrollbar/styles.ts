@@ -64,12 +64,25 @@ export const styles = `
 	position: absolute;
 	left: 50%;
 	transform: translateX(-50%);
-
 	max-height: 100%;
 }
 
 .scrollbar_thumb:hover {
 	background: var(--thumb-hover-color) !important;
+}
+
+.scrollbar_thumb_image{
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	max-height: 100%;
+	z-index: 100;
+
+	img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
 }
 
 @keyframes fadeIn {
