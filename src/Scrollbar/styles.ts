@@ -3,7 +3,6 @@ export const styles = `
 	display: grid;
 	height: 100%;
 	position: relative;
-	gap: 20rem;
 }
 
 .scrollbar_content {
@@ -26,7 +25,8 @@ export const styles = `
 	place-items: center;
 	height: 100%;
 	opacity: 0;
-	
+	position: relative;
+	z-index: 300;
 }
 
 .scrollbar_track_and_thumb {

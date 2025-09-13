@@ -4,5 +4,5 @@
 		"sourceMap": true,
 		"outDir": "./dist/dev"
 	},
-	"include": ["src/**/*", "src/dev/declarations/*.ts", "src/dev/types/*.ts"]
+	"include": ["src/**/*"]
 }

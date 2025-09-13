@@ -11,27 +11,35 @@ import { injectStyles } from './styles';
 export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 	const {
 		style,
-		keepItBottom = false,
 		units = 'px',
-		barTransition = 0,
-		thumbTransition = 0,
-		barShadow = 'none',
-		thumbShadow = 'none',
-		barColor = '#87ceeb',
-		thumbColor = 'rgba(0, 0, 0, 0.5)',
-		barBorderColor = 'transparent',
 		contentHeight = 300,
-		barBorderWidth = 0,
 		contentPadding = 10,
+
+		keepItBottom = false,
+
+		barColor = '#87ceeb',
+		barHoverColor,
 		barWidth = 12,
 		barRadius = 10,
-		thumbRadius,
-		thumbWidth,
-		barHoverColor,
+		barShadow = 'none',
+		barBorderColor = 'transparent',
+		barBorderWidth = 0,
+		barTransition = 0,
+
+		thumbColor = 'rgba(0, 0, 0, 0.5)',
 		thumbHoverColor,
+		thumbWidth,
+		thumbRadius,
+		thumbShadow = 'none',
+		thumbTransition = 0,
+
 		thumbImage = null,
 		thumbImageWidth = 10,
 		thumbImageHeight = 10,
+
+		mask = false,
+		maskSize = 20,
+
 		onScrollTop,
 		onScrollBottom,
 	} = props
@@ -44,6 +52,8 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 	const mutationObserver = useRef<MutationObserver | null>(null)
 
 	// States
+	const [isTop, setIsTop] = useState<boolean>(false)
+	const [isBottom, setIsBottom] = useState<boolean>(false)
 	const [initialScrollTop, setInitialScrollTop] = useState<number>(0)
 	const [isDragging, setIsDragging] = useState<boolean>(false)
 	const [isScrollable, setIsScrollable] = useState<boolean>(true)
@@ -59,6 +69,9 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 		const { scrollTop, scrollHeight, clientHeight } = contentRef.current
 		const isAtTop = scrollTop === 0
 		const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1
+
+		setIsTop(isAtTop)
+		setIsBottom(isAtBottom)
 
 		if (isAtTop && onScrollTop) {
 			onScrollTop()
@@ -338,6 +351,21 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 				style={{
 					paddingRight: `${contentPadding}${units}`,
 					height: `${contentHeight}${units}`,
+					...(mask &&
+						isScrollable && {
+							maskImage: isTop
+								? `linear-gradient(to bottom, black ${maskSize}%, transparent 100%)`
+								: isBottom
+								? `linear-gradient(to top, black ${maskSize}%, transparent 100%)`
+								: `linear-gradient(to bottom, black ${maskSize}%, transparent 100%), linear-gradient(to top, black ${maskSize}%, transparent 100%)`,
+							WebkitMaskImage: isTop
+								? `linear-gradient(to bottom, black ${maskSize}%, transparent 100%)`
+								: isBottom
+								? `linear-gradient(to top, black ${maskSize}%, transparent 100%)`
+								: `linear-gradient(to bottom, black ${maskSize}%, transparent 100%), linear-gradient(to top, black ${maskSize}%, transparent 100%)`,
+							maskComposite: 'intersect',
+							WebkitMaskComposite: 'source-in',
+						}),
 				}}
 			>
 				{children}

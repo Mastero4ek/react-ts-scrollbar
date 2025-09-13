@@ -14,6 +14,7 @@ A customizable scrollbar component for React applications built with TypeScript.
 - 📐 Auto-resize handling
 - 🔒 Optional bottom scroll lock
 - 🖼️ Custom thumb image support
+- 🎭 Content masking with fade effects
 - 🎯 Zero dependencies
 - 📱 Responsive design
 
@@ -88,6 +89,13 @@ function App() {
 | thumbImage       | string | null    | URL or path to custom image for the scrollbar thumb |
 | thumbImageWidth  | number | 10      | Width of the custom thumb image                     |
 | thumbImageHeight | number | 10      | Height of the custom thumb image                    |
+
+### Mask Props
+
+| Prop     | Type    | Default | Description                              |
+| -------- | ------- | ------- | ---------------------------------------- |
+| mask     | boolean | false   | Enable content masking with fade effects |
+| maskSize | number  | 20      | Size of the fade mask in percent         |
 
 ### Event Callback Props
 
@@ -173,6 +181,20 @@ function ImageThumbScrollbar() {
 			barWidth={16}
 		>
 			{/* Content with custom thumb image */}
+		</Scrollbar>
+	)
+}
+```
+
+### With Content Masking
+
+```tsx
+import { Scrollbar } from 'react-ts-scrollbar'
+
+function MaskedScrollbar() {
+	return (
+		<Scrollbar style={{ height: '400px' }} mask={true} maskSize={30}>
+			{/* Content with fade effects at scroll boundaries */}
 		</Scrollbar>
 	)
 }
