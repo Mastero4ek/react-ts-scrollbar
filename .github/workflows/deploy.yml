@@ -52,8 +52,15 @@ jobs:
           # Remove all files except .git
           git rm -rf . || true
 
-          # Copy built files
+          # Copy built files (only visible files, no hidden files)
           cp -r src/dev/dist-demo/* .
+          
+          # Clean up any unwanted files that might have been copied
+          rm -rf node_modules src .git .github package.json package-lock.json tsconfig.*.json vite.config.ts README.md
+          
+          # Verify what we have
+          echo "Files in gh-pages after copy:"
+          ls -la
 
           # Add and commit
           git add .
