@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => {
 				open: true,
 			},
 			build: {
-				outDir: '../../dist-demo',
+				outDir: 'dist-demo',
 				sourcemap: true,
 			},
 			root: 'src/dev',

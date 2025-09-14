@@ -34,9 +34,11 @@ jobs:
       - name: Verify build output
         run: |
           echo "Checking if dist-demo exists:"
-          ls -la dist-demo/ || echo "dist-demo directory not found"
+          ls -la src/dev/dist-demo/ || echo "dist-demo directory not found"
           echo "Contents of dist-demo:"
-          ls -la dist-demo/* || echo "No files in dist-demo"
+          ls -la src/dev/dist-demo/* || echo "No files in dist-demo"
+          echo "Current directory structure:"
+          find . -name "dist-demo" -type d
 
       - name: Deploy to gh-pages branch
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
@@ -51,7 +53,7 @@ jobs:
           git rm -rf . || true
 
           # Copy built files
-          cp -r dist-demo/* .
+          cp -r src/dev/dist-demo/* .
 
           # Add and commit
           git add .
