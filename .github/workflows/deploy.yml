@@ -56,7 +56,7 @@ jobs:
           cp -r src/dev/dist-demo/* .
           
           # Clean up any unwanted files that might have been copied
-          rm -rf node_modules src .git .github package.json package-lock.json tsconfig.*.json vite.config.ts README.md
+          rm -rf node_modules src .github package.json package-lock.json tsconfig.*.json vite.config.ts README.md
           
           # Verify what we have
           echo "Files in gh-pages after copy:"
