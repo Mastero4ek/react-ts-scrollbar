@@ -20,7 +20,7 @@ A customizable scrollbar component for React applications built with TypeScript.
 
 You can see the component in action and test all its features in our interactive demo:
 
-**[🚀 Live Demo](https://mastero4ek.github.io/react-ts-scrollbar/)** (opens in new tab)
+**[🚀 Live Demo](https://mastero4ek.github.io/react-ts-scrollbar/)**
 
 The demo includes:
 
