@@ -26,10 +26,17 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build demo
         run: npm run build:dev
+
+      - name: Verify build output
+        run: |
+          echo "Checking if dist-demo exists:"
+          ls -la dist-demo/ || echo "dist-demo directory not found"
+          echo "Contents of dist-demo:"
+          ls -la dist-demo/* || echo "No files in dist-demo"
 
       - name: Deploy to gh-pages branch
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
