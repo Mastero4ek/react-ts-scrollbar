@@ -1,3 +1,5 @@
+import React from 'react';
+
 export type ScrollbarProps = {
 	style?: React.CSSProperties
 	children: React.ReactNode

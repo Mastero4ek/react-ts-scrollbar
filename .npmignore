@@ -5,7 +5,9 @@ src/dev
 vite.config.ts
 
 # Development documentation
-README.dev.md
+src/dev/DEVELOPMENT.md
+
+src/types/types.d.ts
 
 # Configuration files
 tsconfig*.json

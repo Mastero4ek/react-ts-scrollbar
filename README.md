@@ -18,6 +18,17 @@ A customizable scrollbar component for React applications built with TypeScript.
 - 🎯 Zero dependencies
 - 📱 Responsive design
 
+You can see the component in action and test all its features in our interactive demo:
+
+**[🚀 Live Demo](https://mastero4ek.github.io/react-ts-scrollbar/)**
+
+The demo includes:
+
+- Real-time customization of all scrollbar properties
+- Interactive examples with different configurations
+- Code generation for your custom settings
+- Visual preview of all styling options
+
 ## Installation
 
 ```bash
