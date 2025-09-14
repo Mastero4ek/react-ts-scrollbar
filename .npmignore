@@ -1,0 +1,45 @@
+# Source files and development
+scripts
+src
+src/dev
+vite.config.ts
+
+# Development documentation
+src/dev/DEVELOPMENT.md
+
+src/types/types.d.ts
+
+# Configuration files
+tsconfig*.json
+.gitignore
+.npmignore
+
+# Development dependencies and cache
+node_modules
+.npm
+.eslintcache
+*.tsbuildinfo
+
+# Logs and temporary files
+*.log
+logs
+tmp/
+temp/
+
+# Test files
+test/
+tests/
+__tests__/
+*.test.*
+*.spec.*
+coverage/
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db

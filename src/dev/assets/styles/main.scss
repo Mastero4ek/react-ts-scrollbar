@@ -1,0 +1,428 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+		'Helvetica Neue', Arial, sans-serif;
+	font-size: 16px;
+	line-height: 1.5;
+	color: #333333;
+}
+
+.app {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 15px;
+	padding: 30px;
+}
+
+.container {
+	width: 847px;
+	display: flex;
+	flex-direction: column;
+	gap: 25px;
+	padding: 20px;
+	border-radius: 15px;
+	position: relative;
+	border: 3px solid #ffffff;
+	background: linear-gradient(180deg, #ebf4ff 0%, #fff 100%);
+	box-shadow: 0 10px 40px 0 rgba(112, 144, 176, 0.25);
+
+	hr {
+		border: 1px solid #333333;
+		margin: 0;
+		padding: 0;
+		width: 100%;
+		opacity: 0.2;
+	}
+
+	h1 {
+		font-size: 25px;
+		font-weight: 600;
+		color: #333333;
+	}
+
+	pre {
+		width: 100%;
+		display: inline-block;
+		margin: 0 !important;
+		padding: 0 !important;
+		background-color: transparent !important;
+		font-size: 14px !important;
+	}
+
+	.units-info {
+		font-size: 14px;
+		color: #333333;
+		opacity: 0.5;
+
+		a {
+			color: #4318ff;
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+
+	.settings {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: 15px;
+
+		.buttons {
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 10px;
+			width: 100%;
+			margin-top: 30px;
+
+			button {
+				padding: 10px 20px;
+				border-radius: 10px;
+				border: none;
+				background: #333;
+				color: #fff;
+				cursor: pointer;
+				transition: all 0.3s ease;
+				font-size: 16px;
+
+				&:hover {
+					background: #555;
+				}
+			}
+		}
+	}
+
+	.copy-button {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		cursor: pointer;
+		border: none;
+		background: none;
+		padding: 0;
+		margin: 0;
+		width: fit-content;
+		height: fit-content;
+		transition: all 0.15s ease;
+
+		img {
+			width: 20px;
+			height: 20px;
+		}
+
+		&:disabled {
+			opacity: 0.5;
+			cursor: not-allowed;
+			transform: scale(1.3);
+		}
+
+		&:hover:not(:disabled) {
+			transform: scale(1.2);
+		}
+	}
+}
+
+.content {
+	width: 100%;
+
+	&-item {
+		width: 100%;
+
+		&-list {
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+			width: 100%;
+		}
+
+		&-list-item {
+			text-align: center;
+			text-transform: uppercase;
+			padding: 5px 10px;
+			border-radius: 10px;
+			border: 2px solid rgb(51, 51, 51, 0.2);
+			background: #f0f8ff;
+			transition: all 0.15s ease;
+
+			&:hover {
+				background: rgb(135, 206, 235, 0.2);
+			}
+		}
+
+		span {
+			font-size: 16px;
+			color: #333;
+		}
+	}
+}
+
+.actions-wrapper {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+
+	.actions-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 20px;
+		cursor: pointer;
+		width: 100%;
+
+		h3 {
+			font-size: 20px;
+			color: #333;
+			font-weight: 600;
+		}
+
+		img {
+			width: 24px;
+			height: 24px;
+			transition: all 0.15s ease;
+		}
+	}
+
+	.actions {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		align-items: center;
+		gap: 10px 20px;
+
+		.actions-item {
+			width: fit-content;
+			display: flex;
+			align-items: center;
+			gap: 5px;
+		}
+	}
+
+	.actions-column {
+		width: 100%;
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		align-items: flex-start;
+		gap: 20px 10px;
+
+		.actions-column-item {
+			display: flex;
+			align-items: flex-start;
+			flex-direction: column;
+			gap: 0;
+			width: fit-content;
+
+			label {
+				width: 100%;
+				color: #333;
+				font-size: 16px;
+			}
+		}
+	}
+}
+
+.checkbox {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	font-size: 16px;
+	color: #333;
+	cursor: pointer;
+	position: relative;
+
+	input[type='checkbox'] {
+		opacity: 0;
+		visibility: hidden;
+		width: 20px;
+		height: 20px;
+
+		&:disabled {
+			cursor: not-allowed;
+			opacity: 0.5;
+		}
+
+		&:checked {
+			~ .checkbox-mark {
+				&:after {
+					opacity: 0.5;
+					transform: scale(1);
+				}
+			}
+		}
+	}
+
+	.checkbox-mark {
+		position: absolute;
+		width: 20px;
+		height: 20px;
+		border-radius: 2px;
+		border: 1px solid #333333;
+		background: #f0f8ff;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		&:after {
+			content: '';
+			position: relative;
+			width: 15px;
+			height: 15px;
+			border-radius: 2px;
+			background: #333333;
+			opacity: 0;
+			transition: all 0.15s ease;
+			transform: scale(0.3);
+		}
+	}
+}
+
+.range {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 10px;
+	color: #333;
+	font-size: 16px;
+	position: relative;
+
+	input[type='range'] {
+		opacity: 0;
+		visibility: hidden;
+		height: 10px;
+
+		&:disabled {
+			cursor: not-allowed;
+			opacity: 0.5;
+
+			~ span {
+				opacity: 0.5;
+			}
+		}
+	}
+
+	.range-label {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 5px;
+		width: 100%;
+
+		input[type='text'] {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 35px;
+			height: 24px;
+			padding: 0 4px;
+			background: #f0f8ff;
+			border: 1px solid #333333;
+			border-radius: 4px;
+
+			&:focus {
+				outline: none;
+			}
+
+			&:disabled {
+				opacity: 0.5;
+				cursor: not-allowed;
+			}
+		}
+	}
+
+	.range-wrapper {
+		position: absolute;
+		height: 10px;
+		cursor: pointer;
+		bottom: 0;
+		left: 0;
+		right: 0;
+
+		.range-bar {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background: #f0f8ff;
+			border: 1px solid #333333;
+			border-radius: 10px;
+			cursor: pointer;
+			transition: background-color 0.15s ease;
+		}
+
+		.range-thumb {
+			position: absolute;
+			width: 20px;
+			height: 8px;
+			background: #333333;
+			border-radius: 10px;
+			cursor: grab;
+			transition: all 0.15s ease;
+			z-index: 100;
+			pointer-events: all;
+			top: 50%;
+
+			&:active {
+				cursor: grabbing;
+				transform: translateX(-50%) translateY(-50%) scale(1.2);
+			}
+		}
+	}
+}
+
+.color-picker-wrapper {
+	position: relative;
+
+	label {
+		font-size: 16px;
+		color: #333;
+	}
+
+	.color-picker {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+
+		input {
+			height: 24px;
+			padding: 0 8px;
+			border: 1px solid #333333;
+			border-radius: 4px;
+			font-size: 16px;
+			width: 100px;
+			background-color: #f0f8ff;
+
+			&:focus {
+				outline: none;
+			}
+		}
+	}
+
+	.color-picker-input {
+		width: 20px;
+		height: 20px;
+		border: 1px solid #333333;
+		border-radius: 4px;
+		cursor: pointer;
+	}
+
+	.color-picker-table {
+		position: absolute;
+		top: calc(100% + 10px);
+		left: 0;
+		z-index: 500;
+
+		.react-colorful__pointer {
+			width: 20px;
+			height: 20px;
+		}
+	}
+}
