@@ -36,26 +36,29 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          
+
           # Switch to gh-pages branch or create it
           git checkout gh-pages || git checkout --orphan gh-pages
-          
+
           # Remove all files except .git
           git rm -rf . || true
-          
+
           # Copy built files
           cp -r dist-demo/* .
-          
+
           # Add and commit
           git add .
           git commit -m "Update demo from main branch" || exit 0
-          
+
           # Push to gh-pages
           git push origin gh-pages
 
   deploy-pages:
     needs: build-and-deploy
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     permissions:
       contents: read
       pages: write
