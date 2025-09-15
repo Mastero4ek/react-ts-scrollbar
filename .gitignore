@@ -4,7 +4,6 @@ dist-demo
 node_modules
 
 # Development files
-src/dev/DEVELOPMENT.md
 
 # Logs
 logs

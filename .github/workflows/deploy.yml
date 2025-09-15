@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -41,7 +41,7 @@ jobs:
           find . -name "dist-demo" -type d
 
       - name: Deploy to gh-pages branch
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
@@ -54,17 +54,17 @@ jobs:
 
           # Copy built files (only visible files, no hidden files)
           cp -r src/dev/dist-demo/* .
-          
+
           # Clean up any unwanted files that might have been copied
           rm -rf node_modules src .github package.json package-lock.json tsconfig.*.json vite.config.ts README.md
-          
+
           # Verify what we have
           echo "Files in gh-pages after copy:"
           ls -la
 
           # Add and commit
           git add .
-          git commit -m "Update demo from main branch" || exit 0
+          git commit -m "Update demo" || exit 0
 
           # Push to gh-pages
           git push origin gh-pages

@@ -211,22 +211,6 @@ function MaskedScrollbar() {
 }
 ```
 
-## Development
-
-```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Build the package
-npm run build
-
-# Preview production build
-npm run preview
-```
-
 ## Browser Support
 
 - Chrome (latest)

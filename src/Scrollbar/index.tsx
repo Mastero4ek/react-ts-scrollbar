@@ -14,9 +14,7 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 		units = 'px',
 		contentHeight = 300,
 		contentPadding = 10,
-
 		keepItBottom = false,
-
 		barColor = '#87ceeb',
 		barHoverColor,
 		barWidth = 12,
@@ -25,21 +23,17 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 		barBorderColor = 'transparent',
 		barBorderWidth = 0,
 		barTransition = 0,
-
 		thumbColor = 'rgba(0, 0, 0, 0.5)',
 		thumbHoverColor,
 		thumbWidth,
 		thumbRadius,
 		thumbShadow = 'none',
 		thumbTransition = 0,
-
 		thumbImage = null,
 		thumbImageWidth = 10,
 		thumbImageHeight = 10,
-
 		mask = false,
 		maskSize = 20,
-
 		onScrollTop,
 		onScrollBottom,
 	} = props
@@ -50,38 +44,31 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 	const scrollThumbRef = useRef<HTMLDivElement>(null)
 	const observer = useRef<ResizeObserver | null>(null)
 	const mutationObserver = useRef<MutationObserver | null>(null)
-
 	// States
 	const [isTop, setIsTop] = useState<boolean>(false)
 	const [isBottom, setIsBottom] = useState<boolean>(false)
 	const [initialScrollTop, setInitialScrollTop] = useState<number>(0)
 	const [isDragging, setIsDragging] = useState<boolean>(false)
-	const [isScrollable, setIsScrollable] = useState<boolean>(true)
+	const [isScrollable, setIsScrollable] = useState<boolean>(false)
 	const [thumbHeight, setThumbHeight] = useState<number>(20)
 	const [scrollStartPosition, setScrollStartPosition] = useState<number | null>(
 		null
 	)
-
 	// Handle scroll position and trigger callbacks
 	const handleScroll = useCallback(() => {
 		if (!contentRef.current) return
-
 		const { scrollTop, scrollHeight, clientHeight } = contentRef.current
 		const isAtTop = scrollTop === 0
 		const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1
-
 		setIsTop(isAtTop)
 		setIsBottom(isAtBottom)
-
 		if (isAtTop && onScrollTop) {
 			onScrollTop()
 		}
-
 		if (isAtBottom && onScrollBottom) {
 			onScrollBottom()
 		}
 	}, [onScrollTop, onScrollBottom])
-
 	// Handle the resize of the track
 	const handleResize = (ref: HTMLDivElement, trackSize: number) => {
 		const { clientHeight, scrollHeight } = ref
@@ -91,30 +78,23 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 			Math.max((clientHeight / scrollHeight) * trackSize, minThumbHeight),
 			maxThumbHeight
 		)
-
 		setThumbHeight(newThumbHeight)
-
 		const shouldBeScrollable = scrollHeight > clientHeight + 1
-
 		setIsScrollable(shouldBeScrollable)
 	}
-
 	// Scroll to bottom
 	const scrollToBottom = useCallback(() => {
 		if (contentRef.current) {
 			contentRef.current.scrollTop = contentRef.current.scrollHeight
 		}
 	}, [])
-
 	// Click on the track to scroll
 	const handleTrackClick = useCallback(
 		(e: React.MouseEvent<HTMLDivElement>) => {
 			e.preventDefault()
 			e.stopPropagation()
-
 			const { current: trackCurrent } = scrollTrackRef
 			const { current: contentCurrent } = contentRef
-
 			if (trackCurrent && contentCurrent) {
 				const { clientY } = e
 				const target = e.target as HTMLDivElement
@@ -125,7 +105,6 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 					clickRatio *
 						(contentCurrent.scrollHeight - contentCurrent.clientHeight)
 				)
-
 				contentCurrent.scrollTo({
 					top: scrollAmount,
 					behavior: 'smooth',
@@ -134,7 +113,6 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 		},
 		[]
 	)
-
 	// Update the thumb position
 	const handleThumbPosition = useCallback(() => {
 		if (
@@ -144,67 +122,50 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 		) {
 			return
 		}
-
 		const {
 			scrollTop: contentTop,
 			scrollHeight: contentHeight,
 			clientHeight: contentClientHeight,
 		} = contentRef.current
-
 		const scrollableDistance = contentHeight - contentClientHeight
-
 		if (scrollableDistance <= 0) return
-
 		const scrollPercentage = (contentTop / scrollableDistance) * 100
 		const topValue = Math.max(0, Math.min(scrollPercentage, 100))
-
 		const thumb = scrollThumbRef.current
-
 		thumb.style.top = `${topValue}%`
 		thumb.style.transform = `translateX(-50%) translateY(-${topValue}%)`
 	}, [])
-
 	// Start dragging the thumb
 	const handleThumbMousedown = useCallback(
 		(e: React.MouseEvent<HTMLDivElement>) => {
 			e.preventDefault()
 			e.stopPropagation()
-
 			setScrollStartPosition(e.clientY)
-
 			if (contentRef.current) {
 				setInitialScrollTop(contentRef.current.scrollTop)
 			}
-
 			setIsDragging(true)
 		},
 		[]
 	)
-
 	// Stop dragging the thumb
 	const handleThumbMouseup = useCallback((e: MouseEvent) => {
 		e.preventDefault()
 		e.stopPropagation()
-
 		setIsDragging(false)
 	}, [])
-
 	// Drag the thumb
 	const handleThumbMousemove = useCallback(
 		(e: MouseEvent) => {
 			e.preventDefault()
 			e.stopPropagation()
-
 			if (isDragging && contentRef.current && scrollStartPosition !== null) {
 				const {
 					scrollHeight: contentScrollHeight,
 					clientHeight: contentClientHeight,
 				} = contentRef.current
-
 				const scrollableDistance = contentScrollHeight - contentClientHeight
-
 				if (scrollableDistance <= 0) return
-
 				const trackHeight = scrollTrackRef.current?.clientHeight || 0
 				const deltaY = e.clientY - scrollStartPosition
 				const scrollPercentage = (deltaY / trackHeight) * 100
@@ -215,18 +176,21 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 					),
 					scrollableDistance
 				)
-
 				contentRef.current.scrollTop = newScrollTop
 			}
 		},
 		[isDragging, scrollStartPosition, initialScrollTop]
 	)
-
 	// Inject styles when component mounts
 	useEffect(() => {
 		injectStyles()
 	}, [])
-
+	// Initial check for scrollability when component mounts
+	useEffect(() => {
+		if (contentRef.current && scrollTrackRef.current) {
+			handleResize(contentRef.current, scrollTrackRef.current.clientHeight)
+		}
+	}, [])
 	// Handle keepItBottom functionality
 	useEffect(() => {
 		if (contentRef.current && keepItBottom) {
@@ -235,13 +199,11 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 					scrollToBottom()
 				})
 			})
-
 			const resizeObserver = new ResizeObserver(() => {
 				requestAnimationFrame(() => {
 					scrollToBottom()
 				})
 			})
-
 			observer.observe(contentRef.current, {
 				attributes: true,
 				attributeFilter: ['style', 'class', 'height'],
@@ -249,23 +211,19 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 				childList: false,
 				characterData: false,
 			})
-
 			observer.observe(contentRef.current, {
 				childList: true,
 				subtree: true,
 				attributes: false,
 				characterData: false,
 			})
-
 			resizeObserver.observe(contentRef.current)
-
 			return () => {
 				observer.disconnect()
 				resizeObserver.disconnect()
 			}
 		}
 	}, [keepItBottom, scrollToBottom])
-
 	// Handle content changes and resize observations
 	useEffect(() => {
 		if (contentRef.current) {
@@ -280,7 +238,6 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 					}
 				})
 			})
-
 			mutationObserver.current.observe(contentRef.current, {
 				childList: true,
 				subtree: true,
@@ -288,7 +245,6 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 				attributes: true,
 				attributeFilter: ['style', 'class', 'height', 'width'],
 			})
-
 			observer.current = new ResizeObserver(() => {
 				requestAnimationFrame(() => {
 					if (scrollTrackRef.current && contentRef.current) {
@@ -301,42 +257,35 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 					}
 				})
 			})
-
 			observer.current.observe(contentRef.current)
-
 			return () => {
 				mutationObserver.current?.disconnect()
 				observer.current?.disconnect()
 			}
 		}
 	}, [handleResize, handleThumbPosition])
-
 	// Handle scroll events
 	useEffect(() => {
 		if (contentRef.current) {
 			contentRef.current.addEventListener('scroll', handleThumbPosition)
 			contentRef.current.addEventListener('scroll', handleScroll)
-
 			return () => {
 				contentRef.current?.removeEventListener('scroll', handleThumbPosition)
 				contentRef.current?.removeEventListener('scroll', handleScroll)
 			}
 		}
 	}, [handleScroll, handleThumbPosition])
-
 	// Handle mouse events
 	useEffect(() => {
 		document.addEventListener('mousemove', handleThumbMousemove)
 		document.addEventListener('mouseup', handleThumbMouseup)
 		document.addEventListener('mouseleave', handleThumbMouseup)
-
 		return () => {
 			document.removeEventListener('mousemove', handleThumbMousemove)
 			document.removeEventListener('mouseup', handleThumbMouseup)
 			document.removeEventListener('mouseleave', handleThumbMouseup)
 		}
 	}, [handleThumbMousemove, handleThumbMouseup])
-
 	return (
 		<div
 			className='scrollbar_wrapper'
@@ -370,14 +319,14 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 			>
 				{children}
 			</article>
-
 			<div
 				className='scrollbar'
 				style={{
 					borderRadius: `${barRadius}${units}`,
 					boxShadow: `${barShadow}`,
 					display: isScrollable ? 'block' : 'none',
-					animation: `fadeIn ${barTransition}s forwards`,
+					opacity: isScrollable ? 1 : 0,
+					transition: `opacity ${barTransition}s ease`,
 				}}
 			>
 				<div
@@ -400,7 +349,6 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 							['--bar-border-color' as string]: barBorderColor,
 						}}
 					></div>
-
 					{thumbImage ? (
 						<div
 							ref={scrollThumbRef}

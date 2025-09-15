@@ -1,6 +1,7 @@
 import './assets/styles/main.scss';
 
 import React, {
+  useCallback,
   useEffect,
   useState,
 } from 'react';
@@ -15,11 +16,12 @@ import scrollImage from './assets/images/scroll-image.png';
 import { Accordion } from './components/Accordion.tsx';
 import { ColorPicker } from './components/ColorPicker.tsx';
 import { Input } from './components/Input.tsx';
+import { Spinner } from './components/Spinner.tsx';
 
-// Type assertion to fix JSX component type error
 const SyntaxHighlighterComponent = SyntaxHighlighter as any
 
-export const syntaxText = `<Scrollbar
+const App = () => {
+	const syntaxText = `<Scrollbar
 	style={{backgroundColor: '#f5f5f5', padding: '20px'}}
 	units='px'
 	contentHeight={200}
@@ -41,11 +43,12 @@ export const syntaxText = `<Scrollbar
 </Scrollbar>
 `
 
-const App = () => {
 	const [items, setItems] = useState<number[]>([])
 	const [syntax, setSyntax] = useState<string>(syntaxText)
+
 	const [copySuccess, setCopySuccess] = useState<boolean>(false)
 	const [openColorPicker, setOpenColorPicker] = useState<string | null>(null)
+	const [isLoading, setIsLoading] = useState<boolean>(true)
 
 	const [scrollSettings, setScrollSettings] = useState({
 		isKeepBottom: false,
@@ -80,7 +83,7 @@ const App = () => {
 		imageSize: 50,
 	})
 
-	const hasChanges = () => {
+	const hasChanges = useCallback(() => {
 		const defaultValues = {
 			scrollSettings: {
 				isKeepBottom: false,
@@ -113,23 +116,34 @@ const App = () => {
 			},
 		}
 
-		return (
-			items.length > 0 ||
+		const hasItems = items.length > 0
+		const hasScrollChanges =
 			JSON.stringify(scrollSettings) !==
-				JSON.stringify(defaultValues.scrollSettings) ||
+			JSON.stringify(defaultValues.scrollSettings)
+		const hasContentChanges =
 			JSON.stringify(contentSettings) !==
-				JSON.stringify(defaultValues.contentSettings) ||
-			JSON.stringify(barSettings) !==
-				JSON.stringify(defaultValues.barSettings) ||
+			JSON.stringify(defaultValues.contentSettings)
+		const hasBarChanges =
+			JSON.stringify(barSettings) !== JSON.stringify(defaultValues.barSettings)
+		const hasThumbChanges =
 			JSON.stringify(thumbSettings) !==
-				JSON.stringify(defaultValues.thumbSettings)
-		)
-	}
+			JSON.stringify(defaultValues.thumbSettings)
 
-	const resetAll = () => {
+		return (
+			hasItems ||
+			hasScrollChanges ||
+			hasContentChanges ||
+			hasBarChanges ||
+			hasThumbChanges
+		)
+	}, [items, scrollSettings, contentSettings, barSettings, thumbSettings])
+
+	const resetAll = useCallback(() => {
 		if (!hasChanges()) {
 			return
 		}
+
+		fakeLoading()
 
 		setItems([])
 		setScrollSettings({
@@ -163,7 +177,7 @@ const App = () => {
 		})
 		setOpenColorPicker(null)
 		setSyntax(syntaxText)
-	}
+	}, [hasChanges])
 
 	const generateListItems = () => {
 		if (items.length === 0) {
@@ -316,6 +330,18 @@ const App = () => {
 
 		return syntax
 	}
+
+	const fakeLoading = () => {
+		setIsLoading(true)
+
+		setTimeout(() => {
+			setIsLoading(false)
+		}, 1000)
+	}
+
+	useEffect(() => {
+		fakeLoading()
+	}, [])
 
 	useEffect(() => {
 		setSyntax(prevSyntax => {
@@ -674,31 +700,36 @@ const App = () => {
 						</button>
 
 						<button
-							type='button'
-							style={{ backgroundColor: '#fba930' }}
 							onClick={() => setItems(prev => prev.slice(0, -1))}
+							type='button'
+							style={{
+								backgroundColor: items.length > 0 ? '#fba930' : '#cccccc',
+								cursor: items.length > 0 ? 'pointer' : 'not-allowed',
+							}}
 						>
 							Remove item
 						</button>
 
 						<button
-							type='button'
-							style={{ backgroundColor: '#fb7030' }}
 							onClick={() => setItems([])}
+							type='button'
+							style={{
+								backgroundColor: items.length > 0 ? '#fb7030' : '#cccccc',
+								cursor: items.length > 0 ? 'pointer' : 'not-allowed',
+							}}
 						>
 							Clear items
 						</button>
 
 						<button
+							onClick={resetAll}
 							type='button'
 							disabled={!hasChanges()}
 							style={{
 								marginLeft: 'auto',
-								backgroundColor: hasChanges() ? '#e95656' : '#ccc',
+								backgroundColor: hasChanges() ? '#e95656' : '#cccccc',
 								cursor: hasChanges() ? 'pointer' : 'not-allowed',
-								opacity: hasChanges() ? 1 : 0.5,
 							}}
-							onClick={resetAll}
 						>
 							Reset all settings
 						</button>
@@ -755,22 +786,31 @@ const App = () => {
 				</div>
 			</div>
 
-			<div className='container' style={{ width: '550px' }}>
-				<SyntaxHighlighterComponent language='tsx' style={solarizedlight}>
-					{syntax}
-				</SyntaxHighlighterComponent>
+			<div
+				className='container'
+				style={{ width: '550px', height: isLoading ? '466px' : 'auto' }}
+			>
+				{isLoading ? (
+					<Spinner />
+				) : (
+					<>
+						<SyntaxHighlighterComponent language='tsx' style={solarizedlight}>
+							{syntax}
+						</SyntaxHighlighterComponent>
 
-				<button
-					disabled={copySuccess}
-					className='copy-button'
-					type='button'
-					onClick={copyToClipboard}
-				>
-					<img
-						alt='Copy to clipboard'
-						src={copySuccess ? copyDoneImage : copyImage}
-					/>
-				</button>
+						<button
+							disabled={copySuccess}
+							className='copy-button'
+							type='button'
+							onClick={copyToClipboard}
+						>
+							<img
+								alt='Copy to clipboard'
+								src={copySuccess ? copyDoneImage : copyImage}
+							/>
+						</button>
+					</>
+				)}
 			</div>
 		</div>
 	)
