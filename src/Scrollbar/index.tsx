@@ -189,6 +189,11 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 	useEffect(() => {
 		if (contentRef.current && scrollTrackRef.current) {
 			handleResize(contentRef.current, scrollTrackRef.current.clientHeight)
+			const { scrollTop, scrollHeight, clientHeight } = contentRef.current
+			const isAtTop = scrollTop === 0
+			const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1
+			setIsTop(isAtTop)
+			setIsBottom(isAtBottom)
 		}
 	}, [])
 	// Handle keepItBottom functionality
