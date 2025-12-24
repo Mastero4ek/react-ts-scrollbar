@@ -1,22 +1,18 @@
-import './assets/styles/main.scss';
+import './assets/styles/main.scss'
 
-import React, {
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useState } from 'react'
 
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
-import { Scrollbar } from '../Scrollbar';
-import copyDoneImage from './assets/images/copy-done.png';
-import copyImage from './assets/images/copy.png';
-import scrollImage from './assets/images/scroll-image.png';
-import { Accordion } from './components/Accordion.tsx';
-import { ColorPicker } from './components/ColorPicker.tsx';
-import { Input } from './components/Input.tsx';
-import { Spinner } from './components/Spinner.tsx';
+import { Scrollbar } from '../Scrollbar'
+import copyDoneImage from './assets/images/copy-done.png'
+import copyImage from './assets/images/copy.png'
+import scrollImage from './assets/images/scroll-image.png'
+import { Accordion } from './components/Accordion.tsx'
+import { ColorPicker } from './components/ColorPicker.tsx'
+import { Input } from './components/Input.tsx'
+import { Spinner } from './components/Spinner.tsx'
 
 const SyntaxHighlighterComponent = SyntaxHighlighter as any
 
@@ -419,7 +415,7 @@ const App = () => {
 					<Accordion title='Content settings' className='actions-column'>
 						<div className='actions-column-item'>
 							<Input
-								label='Height'
+								label='Max Height'
 								type='range'
 								value={contentSettings.contentHeight}
 								max={300}

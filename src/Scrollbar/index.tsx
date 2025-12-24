@@ -1,12 +1,7 @@
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-import { ScrollbarProps } from '../types/scrollbar';
-import { injectStyles } from './styles';
+import { ScrollbarProps } from '../types/scrollbar'
+import { injectStyles } from './styles'
 
 export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 	const {
@@ -37,7 +32,6 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 		onScrollTop,
 		onScrollBottom,
 	} = props
-
 	// Refs
 	const contentRef = useRef<HTMLDivElement>(null)
 	const scrollTrackRef = useRef<HTMLDivElement>(null)
@@ -124,10 +118,10 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 		}
 		const {
 			scrollTop: contentTop,
-			scrollHeight: contentHeight,
+			scrollHeight: contentScrollHeight,
 			clientHeight: contentClientHeight,
 		} = contentRef.current
-		const scrollableDistance = contentHeight - contentClientHeight
+		const scrollableDistance = contentScrollHeight - contentClientHeight
 		if (scrollableDistance <= 0) return
 		const scrollPercentage = (contentTop / scrollableDistance) * 100
 		const topValue = Math.max(0, Math.min(scrollPercentage, 100))
@@ -304,7 +298,8 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 				ref={contentRef}
 				style={{
 					paddingRight: `${contentPadding}${units}`,
-					height: `${contentHeight}${units}`,
+					height: 'auto',
+					maxHeight: `${contentHeight}${units}`,
 					...(mask &&
 						isScrollable && {
 							maskImage: isTop

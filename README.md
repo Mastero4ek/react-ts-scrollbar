@@ -60,7 +60,7 @@ function App() {
 | style          | CSSProperties | {}        | Custom styles for the scrollbar container    |
 | children       | ReactNode     | undefined | Content to be displayed inside the scrollbar |
 | units          | string        | 'px'      | CSS units to use for measurements            |
-| contentHeight  | number        | 300       | Fixed height of the content area             |
+| contentHeight  | number        | 300       | Maximum height of the content area            |
 | contentPadding | number        | 10        | Padding of the content area                  |
 
 ### Behavior Props
