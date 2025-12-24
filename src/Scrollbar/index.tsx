@@ -10,6 +10,7 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 		contentHeight = 300,
 		contentPadding = 10,
 		keepItBottom = false,
+		barPosition = 'right',
 		barColor = '#87ceeb',
 		barHoverColor,
 		barWidth = 12,
@@ -285,19 +286,30 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 			document.removeEventListener('mouseleave', handleThumbMouseup)
 		}
 	}, [handleThumbMousemove, handleThumbMouseup])
+	const { gap, ...restStyle } = style || {}
+	const isLeft = barPosition === 'left'
+
 	return (
 		<div
 			className='scrollbar_wrapper'
 			style={{
-				gridTemplate: `auto / 1fr ${barWidth}${units}`,
-				...style,
+				...restStyle,
+				gridTemplate: isScrollable
+					? isLeft
+						? `auto / ${barWidth}${units} 1fr`
+						: `auto / 1fr ${barWidth}${units}`
+					: `auto / 1fr`,
+				gap: isScrollable ? gap : 0,
 			}}
 		>
 			<article
 				className='scrollbar_content'
 				ref={contentRef}
 				style={{
-					paddingRight: `${contentPadding}${units}`,
+					paddingRight:
+						isScrollable && !isLeft ? `${contentPadding}${units}` : 0,
+					paddingLeft: isScrollable && isLeft ? `${contentPadding}${units}` : 0,
+					order: isLeft ? 2 : 1,
 					height: 'auto',
 					maxHeight: `${contentHeight}${units}`,
 					...(mask &&
@@ -322,6 +334,7 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 			<div
 				className='scrollbar'
 				style={{
+					order: isLeft ? 1 : 2,
 					borderRadius: `${barRadius}${units}`,
 					boxShadow: `${barShadow}`,
 					display: isScrollable ? 'block' : 'none',

@@ -9,6 +9,8 @@ export type ScrollbarProps = {
 
 	keepItBottom?: boolean
 
+	barPosition?: 'left' | 'right'
+
 	barColor?: string
 	barHoverColor?: string
 	barWidth?: number

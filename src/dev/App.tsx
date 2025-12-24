@@ -67,6 +67,7 @@ const App = () => {
 		barBorderWidth: 2,
 		barBorderColor: '#666666',
 		barTransition: 0,
+		barPosition: 'right',
 	})
 
 	const [thumbSettings, setThumbSettings] = useState({
@@ -100,6 +101,7 @@ const App = () => {
 				barBorderWidth: 2,
 				barBorderColor: '#666666',
 				barTransition: 0,
+				barPosition: 'right',
 			},
 			thumbSettings: {
 				thumbWidth: 8,
@@ -161,6 +163,7 @@ const App = () => {
 			barBorderWidth: 2,
 			barBorderColor: '#666666',
 			barTransition: 0,
+			barPosition: 'right',
 		})
 		setThumbSettings({
 			thumbWidth: 8,
@@ -220,6 +223,7 @@ const App = () => {
 			/\s*barBorderColor='[^']*'/g,
 			/\s*barTransition=\{[^}]*\}/g,
 			/\s*thumbTransition=\{[^}]*\}/g,
+			/\s*barPosition='[^']*'/g,
 		]
 
 		return propPatterns.reduce(
@@ -301,11 +305,19 @@ const App = () => {
 			},
 		]
 
+		const positionProps = [
+			{
+				condition: barSettings.barPosition === 'right',
+				prop: `\tbarPosition='right'`,
+			},
+		]
+
 		const allProps = [
 			...transitionProps,
 			...scrollProps,
 			...imageProps,
 			...maskProps,
+			...positionProps,
 		]
 
 		for (const { condition, prop } of allProps) {
@@ -476,6 +488,24 @@ const App = () => {
 
 					<Accordion title='Bar settings' className='actions-column'>
 						<div className='actions-item'>
+							<Input
+								type='checkbox'
+								checked={barSettings.barPosition === 'right'}
+								onChange={value =>
+									setBarSettings(prev => ({
+										...prev,
+										barPosition: value ? 'right' : 'left',
+									}))
+								}
+								label='Position: Right'
+							/>
+						</div>
+
+						<div />
+						<div />
+						<div />
+
+						<div className='actions-item'>
 							<ColorPicker
 								label='Color'
 								value={barSettings.barColor}
@@ -513,8 +543,6 @@ const App = () => {
 								onToggle={setOpenColorPicker}
 							/>
 						</div>
-
-						<div className='actions-item'></div>
 
 						<div className='actions-column-item'>
 							<Input
@@ -760,6 +788,7 @@ const App = () => {
 							thumbWidth={thumbSettings.thumbWidth}
 							barRadius={barSettings.barRadius}
 							thumbRadius={thumbSettings.thumbRadius}
+							barPosition={barSettings.barPosition as 'left' | 'right'}
 							onScrollTop={() =>
 								scrollSettings.isScrollTop && alert('Top reached')
 							}
