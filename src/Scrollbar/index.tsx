@@ -1,7 +1,12 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
-import { ScrollbarProps } from '../types/scrollbar'
-import { injectStyles } from './styles'
+import { ScrollbarProps } from '../types/scrollbar';
+import { injectStyles } from './styles';
 
 export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 	const {
@@ -144,17 +149,22 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 		[]
 	)
 	// Stop dragging the thumb
-	const handleThumbMouseup = useCallback((e: MouseEvent) => {
-		e.preventDefault()
-		e.stopPropagation()
-		setIsDragging(false)
-	}, [])
+	const handleThumbMouseup = useCallback(
+		(e: MouseEvent) => {
+			if (isDragging) {
+				e.preventDefault()
+				e.stopPropagation()
+			}
+			setIsDragging(false)
+		},
+		[isDragging]
+	)
 	// Drag the thumb
 	const handleThumbMousemove = useCallback(
 		(e: MouseEvent) => {
-			e.preventDefault()
-			e.stopPropagation()
 			if (isDragging && contentRef.current && scrollStartPosition !== null) {
+				e.preventDefault()
+				e.stopPropagation()
 				const {
 					scrollHeight: contentScrollHeight,
 					clientHeight: contentClientHeight,
