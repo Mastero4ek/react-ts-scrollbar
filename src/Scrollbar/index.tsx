@@ -1,12 +1,7 @@
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-import { ScrollbarProps } from '../types/scrollbar';
-import { injectStyles } from './styles';
+import { ScrollbarProps } from '../types/scrollbar'
+import { injectStyles } from './styles'
 
 export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 	const {
@@ -321,7 +316,7 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 					paddingLeft: isScrollable && isLeft ? `${contentPadding}${units}` : 0,
 					order: isLeft ? 2 : 1,
 					height: 'auto',
-					maxHeight: `${contentHeight}${units}`,
+					...(contentHeight > 0 && { maxHeight: `${contentHeight}${units}` }),
 					...(mask &&
 						isScrollable && {
 							maskImage: isTop
