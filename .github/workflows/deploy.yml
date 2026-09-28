@@ -5,19 +5,21 @@ on:
     branches: [main]
   workflow_dispatch:
 
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pages: write
-      id-token: write
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -33,67 +35,21 @@ jobs:
 
       - name: Verify build output
         run: |
-          echo "Checking if dist-demo exists:"
-          ls -la src/dev/dist-demo/ || echo "dist-demo directory not found"
-          echo "Contents of dist-demo:"
-          ls -la src/dev/dist-demo/* || echo "No files in dist-demo"
-          echo "Current directory structure:"
-          find . -name "dist-demo" -type d
+          ls -la src/dev/dist-demo/
+          test -f src/dev/dist-demo/index.html
 
-      - name: Deploy to gh-pages branch
-        if: github.ref == 'refs/heads/main'
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: src/dev/dist-demo
 
-          # Switch to gh-pages branch or create it
-          git checkout gh-pages || git checkout --orphan gh-pages
-
-          # Remove all files except .git
-          git rm -rf . || true
-
-          # Copy built files (only visible files, no hidden files)
-          cp -r src/dev/dist-demo/* .
-
-          # Clean up any unwanted files that might have been copied
-          rm -rf node_modules src .github package.json package-lock.json tsconfig.*.json vite.config.ts vite.config.mts README.md
-
-          # Verify what we have
-          echo "Files in gh-pages after copy:"
-          ls -la
-
-          # Add and commit
-          git add .
-          git commit -m "Update demo" || exit 0
-
-          # Push to gh-pages
-          git push origin gh-pages
-
-  deploy-pages:
-    needs: build-and-deploy
+  deploy:
+    needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: gh-pages
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
