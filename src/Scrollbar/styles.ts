@@ -4,6 +4,12 @@ export const styles = `
 	height: 100%;
 	position: relative;
 }
+.scrollbar_wrapper--overlay .scrollbar {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	height: 100%;
+}
 .scrollbar_content {
 	-ms-overflow-style: none;
 	overflow: auto;

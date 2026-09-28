@@ -11,6 +11,19 @@ import React, {
 import { ScrollbarProps, ScrollbarRef } from '../types/scrollbar'
 import { injectStyles } from './styles'
 
+const resolveAutoHideDelay = (
+	autoHide: boolean | number | undefined,
+	autoHideDelay: number
+): { active: boolean; delay: number } => {
+	if (autoHide === true) {
+		return { active: true, delay: autoHideDelay }
+	}
+	if (typeof autoHide === 'number') {
+		return { active: true, delay: autoHide }
+	}
+	return { active: false, delay: autoHideDelay }
+}
+
 export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(
 	function Scrollbar(
 		{
@@ -21,6 +34,10 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(
 			contentHeight = 300,
 			contentPadding = 10,
 			keepItBottom = false,
+			type = 'vertical',
+			overlay = false,
+			autoHide = false,
+			autoHideDelay = 1500,
 			barPosition = 'right',
 			barColor = '#87ceeb',
 			barHoverColor,
@@ -48,6 +65,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(
 		ref
 	) {
 		// Refs
+		const wrapperRef = useRef<HTMLDivElement>(null)
 		const contentRef = useRef<HTMLDivElement>(null)
 		const scrollTrackRef = useRef<HTMLDivElement>(null)
 		const scrollThumbRef = useRef<HTMLDivElement>(null)
@@ -61,6 +79,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(
 		const [isScrollable, setIsScrollable] = useState<boolean>(false)
 		const [thumbHeight, setThumbHeight] = useState<number>(20)
 		const [scrollValue, setScrollValue] = useState<number>(0)
+		const [autoHideVisible, setAutoHideVisible] = useState(true)
 		const dragRef = useRef<{
 			active: boolean
 			pointerId: number | null
@@ -68,6 +87,43 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(
 			initialScrollTop: number
 		}>({ active: false, pointerId: null, startY: 0, initialScrollTop: 0 })
 		const edgeRef = useRef({ top: false, bottom: false })
+		const autoHideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+		const isVertical = type === 'vertical'
+		const resolvedBarPosition =
+			isVertical && (barPosition === 'top' || barPosition === 'bottom')
+				? 'right'
+				: !isVertical && (barPosition === 'left' || barPosition === 'right')
+				? 'bottom'
+				: barPosition
+		const isLeft = resolvedBarPosition === 'left'
+		const { active: autoHideEnabled, delay: hideDelay } = resolveAutoHideDelay(
+			autoHide,
+			autoHideDelay
+		)
+		const barVisible = autoHideEnabled ? autoHideVisible : true
+
+		const clearAutoHideTimer = useCallback(() => {
+			if (autoHideTimerRef.current != null) {
+				clearTimeout(autoHideTimerRef.current)
+				autoHideTimerRef.current = null
+			}
+		}, [])
+
+		const scheduleAutoHide = useCallback(() => {
+			clearAutoHideTimer()
+			if (!autoHideEnabled || isDragging) return
+			autoHideTimerRef.current = setTimeout(() => {
+				setAutoHideVisible(false)
+				autoHideTimerRef.current = null
+			}, hideDelay)
+		}, [autoHideEnabled, clearAutoHideTimer, hideDelay, isDragging])
+
+		const bumpAutoHide = useCallback(() => {
+			if (!autoHideEnabled) return
+			setAutoHideVisible(true)
+			scheduleAutoHide()
+		}, [autoHideEnabled, scheduleAutoHide])
 
 		useImperativeHandle(
 			ref,
@@ -109,8 +165,60 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(
 					el.scrollTo({ top: el.scrollHeight, behavior })
 				},
 			}),
-			[]
+			[],
 		)
+
+		useEffect(() => {
+			if (type === 'horizontal' && process.env.NODE_ENV !== 'production') {
+				console.warn(
+					'[react-typescript-scrollbar] type="horizontal" is not implemented yet; rendering as vertical.'
+				)
+			}
+		}, [type])
+
+		useEffect(() => {
+			if (!autoHideEnabled) {
+				clearAutoHideTimer()
+				setAutoHideVisible(true)
+				return
+			}
+
+			setAutoHideVisible(true)
+			scheduleAutoHide()
+
+			const viewport = contentRef.current
+			const wrapper = wrapperRef.current
+			const onActivity = () => bumpAutoHide()
+
+			viewport?.addEventListener('scroll', onActivity)
+			wrapper?.addEventListener('pointerenter', onActivity)
+			wrapper?.addEventListener('pointermove', onActivity)
+			wrapper?.addEventListener('focusin', onActivity)
+
+			return () => {
+				clearAutoHideTimer()
+				viewport?.removeEventListener('scroll', onActivity)
+				wrapper?.removeEventListener('pointerenter', onActivity)
+				wrapper?.removeEventListener('pointermove', onActivity)
+				wrapper?.removeEventListener('focusin', onActivity)
+			}
+		}, [
+			autoHideEnabled,
+			hideDelay,
+			bumpAutoHide,
+			scheduleAutoHide,
+			clearAutoHideTimer,
+		])
+
+		useEffect(() => {
+			if (!autoHideEnabled) return
+			if (isDragging) {
+				clearAutoHideTimer()
+				setAutoHideVisible(true)
+				return
+			}
+			scheduleAutoHide()
+		}, [isDragging, autoHideEnabled, clearAutoHideTimer, scheduleAutoHide])
 
 		// Handle scroll position and trigger callbacks (edge-triggered)
 		const handleScroll = useCallback(() => {
@@ -127,7 +235,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(
 			setScrollValue(
 				scrollableDistance <= 0
 					? 0
-					: Math.round((scrollTop / scrollableDistance) * 100)
+					: Math.round((scrollTop / scrollableDistance) * 100),
 			)
 			edgeRef.current = { top: isAtTop, bottom: isAtBottom }
 
@@ -146,13 +254,13 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(
 				const maxThumbHeight = trackSize
 				const newThumbHeight = Math.min(
 					Math.max((clientHeight / scrollHeight) * trackSize, minThumbHeight),
-					maxThumbHeight
+					maxThumbHeight,
 				)
 				setThumbHeight(newThumbHeight)
 				const shouldBeScrollable = scrollHeight > clientHeight + 1
 				setIsScrollable(shouldBeScrollable)
 			},
-			[]
+			[],
 		)
 		// Scroll to bottom
 		const scrollToBottom = useCallback(() => {
@@ -175,7 +283,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(
 					const clickRatio = (clientY - trackTop) / trackCurrent.clientHeight
 					const scrollAmount = Math.floor(
 						clickRatio *
-							(contentCurrent.scrollHeight - contentCurrent.clientHeight)
+							(contentCurrent.scrollHeight - contentCurrent.clientHeight),
 					)
 					contentCurrent.scrollTo({
 						top: scrollAmount,
@@ -183,7 +291,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(
 					})
 				}
 			},
-			[]
+			[],
 		)
 		// Update the thumb position
 		const handleThumbPosition = useCallback(() => {
@@ -222,7 +330,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(
 				}
 				setIsDragging(true)
 			},
-			[]
+			[],
 		)
 		// Drag the thumb
 		const handleThumbPointerMove = useCallback(
@@ -250,13 +358,13 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(
 					Math.max(
 						0,
 						drag.initialScrollTop +
-							(scrollPercentage / 100) * scrollableDistance
+							(scrollPercentage / 100) * scrollableDistance,
 					),
-					scrollableDistance
+					scrollableDistance,
 				)
 				contentRef.current.scrollTop = newScrollTop
 			},
-			[]
+			[],
 		)
 		// Stop dragging the thumb
 		const handleThumbPointerUp = useCallback(
@@ -274,7 +382,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(
 				}
 				setIsDragging(false)
 			},
-			[]
+			[],
 		)
 		// Inject styles when component mounts (shared, ref-counted)
 		useEffect(() => injectStyles(), [])
@@ -291,7 +399,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(
 				setScrollValue(
 					scrollableDistance <= 0
 						? 0
-						: Math.round((scrollTop / scrollableDistance) * 100)
+						: Math.round((scrollTop / scrollableDistance) * 100),
 				)
 				edgeRef.current = { top: isAtTop, bottom: isAtBottom }
 			}
@@ -372,11 +480,12 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(
 						break
 				}
 			},
-			[isScrollable]
+			[isScrollable],
 		)
 
 		const { gap, ...restStyle } = style || {}
-		const isLeft = barPosition === 'left'
+		const showBar = isScrollable && barVisible
+		const reserveBarColumn = isScrollable && !overlay && showBar
 		const thumbA11yProps = {
 			role: 'scrollbar' as const,
 			'aria-orientation': 'vertical' as const,
@@ -393,18 +502,31 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(
 			onPointerCancel: handleThumbPointerUp,
 		}
 
+		const barSideStyle = overlay
+			? isLeft
+				? { left: 0, right: 'auto' as const }
+				: { right: 0, left: 'auto' as const }
+			: undefined
+
 		return (
 			<div
 				{...rest}
-				className={['scrollbar_wrapper', className].filter(Boolean).join(' ')}
+				ref={wrapperRef}
+				className={[
+					'scrollbar_wrapper',
+					overlay ? 'scrollbar_wrapper--overlay' : null,
+					className,
+				]
+					.filter(Boolean)
+					.join(' ')}
 				style={{
 					...restStyle,
-					gridTemplate: isScrollable
+					gridTemplate: reserveBarColumn
 						? isLeft
 							? `auto / ${barWidth}${units} 1fr`
 							: `auto / 1fr ${barWidth}${units}`
 						: `auto / 1fr`,
-					gap: isScrollable ? gap : 0,
+					gap: reserveBarColumn ? gap : 0,
 				}}
 			>
 				<article
@@ -413,10 +535,10 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(
 					ref={contentRef}
 					style={{
 						paddingRight:
-							isScrollable && !isLeft ? `${contentPadding}${units}` : 0,
+							reserveBarColumn && !isLeft ? `${contentPadding}${units}` : 0,
 						paddingLeft:
-							isScrollable && isLeft ? `${contentPadding}${units}` : 0,
-						order: isLeft ? 2 : 1,
+							reserveBarColumn && isLeft ? `${contentPadding}${units}` : 0,
+						order: overlay ? undefined : isLeft ? 2 : 1,
 						height: 'auto',
 						...(contentHeight > 0 && { maxHeight: `${contentHeight}${units}` }),
 						...(mask &&
@@ -424,13 +546,13 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(
 								maskImage: isTop
 									? `linear-gradient(to bottom, black ${maskSize}%, transparent 100%)`
 									: isBottom
-									? `linear-gradient(to top, black ${maskSize}%, transparent 100%)`
-									: `linear-gradient(to bottom, black ${maskSize}%, transparent 100%), linear-gradient(to top, black ${maskSize}%, transparent 100%)`,
+										? `linear-gradient(to top, black ${maskSize}%, transparent 100%)`
+										: `linear-gradient(to bottom, black ${maskSize}%, transparent 100%), linear-gradient(to top, black ${maskSize}%, transparent 100%)`,
 								WebkitMaskImage: isTop
 									? `linear-gradient(to bottom, black ${maskSize}%, transparent 100%)`
 									: isBottom
-									? `linear-gradient(to top, black ${maskSize}%, transparent 100%)`
-									: `linear-gradient(to bottom, black ${maskSize}%, transparent 100%), linear-gradient(to top, black ${maskSize}%, transparent 100%)`,
+										? `linear-gradient(to top, black ${maskSize}%, transparent 100%)`
+										: `linear-gradient(to bottom, black ${maskSize}%, transparent 100%), linear-gradient(to top, black ${maskSize}%, transparent 100%)`,
 								maskComposite: 'intersect',
 								WebkitMaskComposite: 'source-in',
 							}),
@@ -441,12 +563,15 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(
 				<div
 					className='scrollbar'
 					style={{
-						order: isLeft ? 1 : 2,
+						order: overlay ? undefined : isLeft ? 1 : 2,
 						borderRadius: `${barRadius}${units}`,
 						boxShadow: `${barShadow}`,
-						display: isScrollable ? 'block' : 'none',
-						opacity: isScrollable ? 1 : 0,
+						display: !isScrollable || (!showBar && !overlay) ? 'none' : 'block',
+						opacity: showBar ? 1 : 0,
+						pointerEvents: showBar ? 'auto' : 'none',
 						transition: `opacity ${barTransition}s ease`,
+						width: overlay ? `${barWidth}${units}` : undefined,
+						...barSideStyle,
 					}}
 				>
 					<div
@@ -509,7 +634,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(
 				</div>
 			</div>
 		)
-	}
+	},
 )
 
 Scrollbar.displayName = 'Scrollbar'

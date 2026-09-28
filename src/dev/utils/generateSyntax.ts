@@ -33,6 +33,9 @@ const PROP_PATTERNS = [
 	/\s*barTransition=\{[^}]*\}/g,
 	/\s*thumbTransition=\{[^}]*\}/g,
 	/\s*barPosition='[^']*'/g,
+	/\s*overlay=\{[^}]*\}/g,
+	/\s*autoHide=\{[^}]*\}/g,
+	/\s*autoHideDelay=\{[^}]*\}/g,
 ]
 
 export const clearExistingProps = (syntax: string): string =>
@@ -102,6 +105,18 @@ const generateConditionalProps = (
 		{
 			condition: scrollSettings.isScrollBottom,
 			prop: "\tonScrollBottom={() => alert('Bottom reached')}",
+		},
+		{
+			condition: barSettings.overlay,
+			prop: '\toverlay={true}',
+		},
+		{
+			condition: barSettings.autoHide,
+			prop: '\tautoHide={true}',
+		},
+		{
+			condition: barSettings.autoHide,
+			prop: `\tautoHideDelay={${barSettings.autoHideDelay}}`,
 		},
 	]
 

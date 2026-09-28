@@ -13,6 +13,8 @@ A customizable scrollbar component for React applications built with TypeScript.
 - 🎯 Thumb drag to scroll
 - 📐 Auto-resize handling
 - 🔒 Optional bottom scroll lock
+- 🪟 Overlay mode (track over content, no reserved column)
+- 👻 Auto-hide when idle
 - 🖼️ Custom thumb image support
 - 🎭 Content masking with fade effects
 - 🎯 Zero dependencies
@@ -65,10 +67,14 @@ function App() {
 
 ### Behavior Props
 
-| Prop         | Type               | Default | Description                                                      |
-| ------------ | ------------------ | ------- | ---------------------------------------------------------------- |
-| keepItBottom | boolean            | false   | Whether to keep the scrollbar at the bottom when content changes |
-| barPosition  | `'left' \| 'right'` | 'right' | Side of the track relative to the content                        |
+| Prop           | Type                 | Default | Description                                                                 |
+| -------------- | -------------------- | ------- | --------------------------------------------------------------------------- |
+| keepItBottom   | boolean              | false   | Whether to keep the scrollbar at the bottom when content changes            |
+| type           | `'vertical' \| 'horizontal'` | 'vertical' | Scroll axis. `horizontal` reserved (not implemented yet)             |
+| barPosition    | `'left' \| 'right'`  | 'right' | Side of the track relative to the content                                   |
+| overlay        | boolean              | false   | If true, track overlays content (no reserved grid column)                   |
+| autoHide       | `boolean \| number`  | false   | Hide track when idle. Number = delay ms override. Beside: column collapses while hidden |
+| autoHideDelay  | number               | 1500    | Idle delay in ms when `autoHide` is `true`                                  |
 
 ### Track Styling Props
 
@@ -261,6 +267,31 @@ function MaskedScrollbar() {
 	)
 }
 ```
+
+### Overlay + Auto Hide
+
+`overlay` — track over content (no layout shift).  
+`autoHide` — works with or without overlay; in beside mode the bar column collapses while hidden.
+
+```tsx
+import { Scrollbar } from 'react-typescript-scrollbar'
+
+function OverlayScrollbar() {
+	return (
+		<Scrollbar
+			style={{ height: '400px' }}
+			overlay
+			autoHide
+			autoHideDelay={1500}
+			// or: autoHide={800} — number overrides autoHideDelay
+		>
+			{/* Content */}
+		</Scrollbar>
+	)
+}
+```
+
+> `type='horizontal'` is reserved for a future axis; currently the component always scrolls vertically.
 
 ## Browser Support
 

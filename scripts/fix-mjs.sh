@@ -20,11 +20,18 @@ find ./dist/esm -name "*.js" -type f | while IFS= read -r file; do
 	mv "$file" "${file%.js}.mjs"
 done
 
-# Update import paths in all .mjs files
+# Update import paths in all .mjs files for Node ESM (explicit extensions)
 find ./dist/esm -name "*.mjs" -type f | while IFS= read -r file; do
 	echo "Updating import paths in $file..."
-	sed_i 's|from "\./Scrollbar"|from "./Scrollbar/index.mjs"|g' "$file"
-	sed_i "s|from '\./Scrollbar'|from './Scrollbar/index.mjs'|g" "$file"
-	sed_i "s|from '\./styles'|from './styles.mjs'|g" "$file"
-	sed_i 's|from "\./styles"|from "./styles.mjs"|g' "$file"
+	# Directory barrel → index
+	sed_i 's|from "\./Scrollbar"|from "./Scrollbar/index"|g' "$file"
+	sed_i "s|from '\./Scrollbar'|from './Scrollbar/index'|g" "$file"
+	# Append .mjs to remaining relative imports that have no extension yet
+	sed_i "s|from '\(\.\./[^']*\)'|from '\1.mjs'|g" "$file"
+	sed_i 's|from "\(\.\./[^"]*\)"|from "\1.mjs"|g' "$file"
+	sed_i "s|from '\(\./[^']*\)'|from '\1.mjs'|g" "$file"
+	sed_i 's|from "\(\./[^"]*\)"|from "\1.mjs"|g' "$file"
+	# Undo double extension if any
+	sed_i "s|\.mjs\.mjs'|\.mjs'|g" "$file"
+	sed_i 's|\.mjs\.mjs"|\.mjs"|g' "$file"
 done

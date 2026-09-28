@@ -1,5 +1,7 @@
 import React from 'react'
 
+export type ScrollbarType = 'vertical' | 'horizontal'
+
 export type ScrollbarRef = {
 	readonly element: HTMLElement | null
 
@@ -25,7 +27,11 @@ export type ScrollbarProps = {
 
 	keepItBottom?: boolean
 
-	barPosition?: 'left' | 'right'
+	type?: ScrollbarType
+	overlay?: boolean
+	autoHide?: boolean | number
+	autoHideDelay?: number
+	barPosition?: 'left' | 'right' | 'top' | 'bottom'
 
 	barColor?: string
 	barHoverColor?: string

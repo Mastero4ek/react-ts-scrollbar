@@ -49,6 +49,9 @@ export const DEFAULT_BAR_SETTINGS: BarSettings = {
 	barBorderColor: '#666666',
 	barTransition: 0,
 	barPosition: 'right',
+	overlay: false,
+	autoHide: false,
+	autoHideDelay: 1500,
 }
 
 export const DEFAULT_THUMB_SETTINGS: ThumbSettings = {

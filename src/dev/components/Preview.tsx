@@ -51,6 +51,9 @@ export const Preview = ({
 				barRadius={barSettings.barRadius}
 				thumbRadius={thumbSettings.thumbRadius}
 				barPosition={barSettings.barPosition}
+				overlay={barSettings.overlay}
+				autoHide={barSettings.autoHide}
+				autoHideDelay={barSettings.autoHideDelay}
 				onScrollTop={() => scrollSettings.isScrollTop && alert('Top reached')}
 				onScrollBottom={() =>
 					scrollSettings.isScrollBottom && alert('Bottom reached')

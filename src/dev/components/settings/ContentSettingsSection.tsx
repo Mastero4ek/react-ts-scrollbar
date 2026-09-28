@@ -10,7 +10,7 @@ type Props = {
 }
 
 export const ContentSettingsSection = ({ value, onChange }: Props) => (
-	<Accordion title='Content settings' className='actions-column'>
+	<Accordion title='Content settings'>
 		<div className='actions-column-item'>
 			<Input
 				label='Max Height'
@@ -66,7 +66,5 @@ export const ContentSettingsSection = ({ value, onChange }: Props) => (
 				}
 			/>
 		</div>
-
-		<div className='actions-column-item'></div>
 	</Accordion>
 )

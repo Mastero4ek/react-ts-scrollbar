@@ -169,7 +169,10 @@ export const Range = ({
 	}, [isDragging, disabled])
 
 	return (
-		<div className='range'>
+		<div
+			className='range'
+			style={disabled ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}
+		>
 			<div className='range-label'>
 				<span>{label}</span>
 
@@ -199,16 +202,11 @@ export const Range = ({
 			/>
 
 			<div
-				style={disabled ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
 				className='range-wrapper'
 				ref={rangeRef}
 				onMouseDown={handleMouseDown}
 			>
-				<div
-					style={disabled ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
-					className='range-bar'
-					onClick={handleBarClick}
-				></div>
+				<div className='range-bar' onClick={handleBarClick}></div>
 
 				<div
 					className='range-thumb'

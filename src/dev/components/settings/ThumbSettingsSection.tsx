@@ -18,107 +18,111 @@ export const ThumbSettingsSection = ({
 	openColorPicker,
 	onToggleColorPicker,
 }: Props) => (
-	<Accordion title='Thumb settings' className='actions-column'>
-		<div className='actions-item'>
-			<ColorPicker
-				label='Color'
-				value={value.thumbColor}
-				onChange={next => onChange(prev => ({ ...prev, thumbColor: next }))}
-				id='thumbColor'
-				isOpen={openColorPicker === 'thumbColor'}
-				onToggle={onToggleColorPicker}
-			/>
+	<Accordion title='Thumb settings' className='actions-stack'>
+		<div className='actions-column'>
+			<div className='actions-column-item'>
+				<ColorPicker
+					label='Color'
+					value={value.thumbColor}
+					onChange={next => onChange(prev => ({ ...prev, thumbColor: next }))}
+					id='thumbColor'
+					isOpen={openColorPicker === 'thumbColor'}
+					onToggle={onToggleColorPicker}
+				/>
+			</div>
+
+			<div className='actions-column-item'>
+				<ColorPicker
+					label='Hover color'
+					value={value.thumbHoverColor}
+					onChange={next =>
+						onChange(prev => ({
+							...prev,
+							thumbHoverColor: next,
+						}))
+					}
+					id='thumbHoverColor'
+					isOpen={openColorPicker === 'thumbHoverColor'}
+					onToggle={onToggleColorPicker}
+				/>
+			</div>
 		</div>
 
-		<div className='actions-item'>
-			<ColorPicker
-				label='Hover color'
-				value={value.thumbHoverColor}
-				onChange={next =>
-					onChange(prev => ({
-						...prev,
-						thumbHoverColor: next,
-					}))
-				}
-				id='thumbHoverColor'
-				isOpen={openColorPicker === 'thumbHoverColor'}
-				onToggle={onToggleColorPicker}
-			/>
+		<div className='actions'>
+			<div className='actions-column-item'>
+				<Input
+					label='Width'
+					type='range'
+					value={value.thumbWidth}
+					onChange={next =>
+						onChange(prev => ({
+							...prev,
+							thumbWidth: next as number,
+						}))
+					}
+				/>
+			</div>
+
+			<div className='actions-column-item'>
+				<Input
+					label='Radius'
+					type='range'
+					value={value.thumbRadius}
+					onChange={next =>
+						onChange(prev => ({
+							...prev,
+							thumbRadius: next as number,
+						}))
+					}
+				/>
+			</div>
+
+			<div className='actions-column-item'>
+				<Input
+					label='Transition'
+					max={5}
+					step={0.1}
+					type='range'
+					value={value.thumbTransition}
+					onChange={next =>
+						onChange(prev => ({
+							...prev,
+							thumbTransition: next as number,
+						}))
+					}
+				/>
+			</div>
 		</div>
 
-		<div className='actions-item'></div>
+		<div className='actions-column'>
+			<div className='actions-item'>
+				<Input
+					type='checkbox'
+					checked={value.withImage}
+					onChange={next =>
+						onChange(prev => ({
+							...prev,
+							withImage: next as boolean,
+						}))
+					}
+					label='Image'
+				/>
+			</div>
 
-		<div className='actions-item'></div>
-
-		<div className='actions-column-item'>
-			<Input
-				label='Width'
-				type='range'
-				value={value.thumbWidth}
-				onChange={next =>
-					onChange(prev => ({
-						...prev,
-						thumbWidth: next as number,
-					}))
-				}
-			/>
-		</div>
-
-		<div className='actions-column-item'>
-			<Input
-				label={
-					<Input
-						type='checkbox'
-						checked={value.withImage}
-						onChange={next =>
-							onChange(prev => ({
-								...prev,
-								withImage: next as boolean,
-							}))
-						}
-						label='Image'
-					/>
-				}
-				disabled={!value.withImage}
-				type='range'
-				value={value.imageSize}
-				onChange={next =>
-					onChange(prev => ({
-						...prev,
-						imageSize: next as number,
-					}))
-				}
-			/>
-		</div>
-
-		<div className='actions-column-item'>
-			<Input
-				label='Radius'
-				type='range'
-				value={value.thumbRadius}
-				onChange={next =>
-					onChange(prev => ({
-						...prev,
-						thumbRadius: next as number,
-					}))
-				}
-			/>
-		</div>
-
-		<div className='actions-column-item'>
-			<Input
-				label='Transition'
-				max={5}
-				step={0.1}
-				type='range'
-				value={value.thumbTransition}
-				onChange={next =>
-					onChange(prev => ({
-						...prev,
-						thumbTransition: next as number,
-					}))
-				}
-			/>
+			<div className='actions-column-item'>
+				<Input
+					label='Image size'
+					disabled={!value.withImage}
+					type='range'
+					value={value.imageSize}
+					onChange={next =>
+						onChange(prev => ({
+							...prev,
+							imageSize: next as number,
+						}))
+					}
+				/>
+			</div>
 		</div>
 	</Accordion>
 )

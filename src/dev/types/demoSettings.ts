@@ -20,6 +20,9 @@ export type BarSettings = {
 	barBorderColor: string
 	barTransition: number
 	barPosition: 'left' | 'right'
+	overlay: boolean
+	autoHide: boolean
+	autoHideDelay: number
 }
 
 export type ThumbSettings = {

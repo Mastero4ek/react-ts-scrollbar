@@ -49,6 +49,8 @@ The development server will start on `http://localhost:3000` and automatically o
 | -------------------- | ------------------------------------------------------- |
 | `npm run clean`      | Remove all build artifacts (dist and dist-demo folders) |
 | `npm run rename:esm` | Rename .js files to .mjs in ESM build                   |
+| `npm test`           | Run Vitest unit tests once                              |
+| `npm run test:watch` | Vitest watch mode                                       |
 
 Demo deploy: push to `main` → GitHub Actions (local `gh-pages` / `npm run deploy` removed).
 
@@ -69,6 +71,9 @@ react-ts-scrollbar/
 │   ├── types/               # TypeScript type definitions
 │   ├── dev/                 # Demo application
 │   └── index.ts             # Main export file
+├── test/                    # Vitest + Testing Library
+│   ├── helpers/             # renderScrollbar, scroll mocks
+│   └── scrollbar/           # feature suites
 ├── dist/                    # Build output (generated)
 │   ├── cjs/                 # CommonJS build
 │   ├── esm/                 # ES Modules build
@@ -89,7 +94,19 @@ npm run dev
 # Changes will be reflected immediately in browser
 ```
 
-### 2. Testing Build
+### 2. Unit Tests
+
+```bash
+# Run once (CI uses the same command)
+npm test
+
+# Watch mode while iterating
+npm run test:watch
+```
+
+Tests live under `test/` (jsdom + Testing Library). CI: `.github/workflows/ci.yml` runs `npm audit` + `npm test`.
+
+### 3. Testing Build
 
 ```bash
 # Test complete build
@@ -99,7 +116,7 @@ npm run build
 ls -la dist/
 ```
 
-### 3. Testing Demo
+### 4. Testing Demo
 
 ```bash
 # Build demo application
@@ -109,7 +126,7 @@ npm run build:dev
 npm run preview
 ```
 
-### 4. Git Workflow & Deployment
+### 5. Git Workflow & Deployment
 
 #### Development Branch (dev)
 
