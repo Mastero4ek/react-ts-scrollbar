@@ -8,8 +8,6 @@ export const styles = `
 	-ms-overflow-style: none;
 	overflow: auto;
 	scrollbar-width: none;
-	height: 100%;
-	max-height: 100%;
 	display: flex;
 	flex-direction: column;
 }
@@ -80,7 +78,6 @@ export const styles = `
 	}
 }
 `
-// Function to inject styles into the document
 export const injectStyles = () => {
 	if (typeof document !== 'undefined') {
 		const styleElement = document.createElement('style')

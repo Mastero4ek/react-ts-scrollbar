@@ -1,12 +1,7 @@
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-import { ScrollbarProps } from '../types/scrollbar';
-import { injectStyles } from './styles';
+import { ScrollbarProps } from '../types/scrollbar'
+import { injectStyles } from './styles'
 
 export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 	const {
@@ -15,6 +10,7 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 		contentHeight = 300,
 		contentPadding = 10,
 		keepItBottom = false,
+		barPosition = 'right',
 		barColor = '#87ceeb',
 		barHoverColor,
 		barWidth = 12,
@@ -37,7 +33,6 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 		onScrollTop,
 		onScrollBottom,
 	} = props
-
 	// Refs
 	const contentRef = useRef<HTMLDivElement>(null)
 	const scrollTrackRef = useRef<HTMLDivElement>(null)
@@ -124,10 +119,10 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 		}
 		const {
 			scrollTop: contentTop,
-			scrollHeight: contentHeight,
+			scrollHeight: contentScrollHeight,
 			clientHeight: contentClientHeight,
 		} = contentRef.current
-		const scrollableDistance = contentHeight - contentClientHeight
+		const scrollableDistance = contentScrollHeight - contentClientHeight
 		if (scrollableDistance <= 0) return
 		const scrollPercentage = (contentTop / scrollableDistance) * 100
 		const topValue = Math.max(0, Math.min(scrollPercentage, 100))
@@ -149,17 +144,22 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 		[]
 	)
 	// Stop dragging the thumb
-	const handleThumbMouseup = useCallback((e: MouseEvent) => {
-		e.preventDefault()
-		e.stopPropagation()
-		setIsDragging(false)
-	}, [])
+	const handleThumbMouseup = useCallback(
+		(e: MouseEvent) => {
+			if (isDragging) {
+				e.preventDefault()
+				e.stopPropagation()
+			}
+			setIsDragging(false)
+		},
+		[isDragging]
+	)
 	// Drag the thumb
 	const handleThumbMousemove = useCallback(
 		(e: MouseEvent) => {
-			e.preventDefault()
-			e.stopPropagation()
 			if (isDragging && contentRef.current && scrollStartPosition !== null) {
+				e.preventDefault()
+				e.stopPropagation()
 				const {
 					scrollHeight: contentScrollHeight,
 					clientHeight: contentClientHeight,
@@ -189,6 +189,11 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 	useEffect(() => {
 		if (contentRef.current && scrollTrackRef.current) {
 			handleResize(contentRef.current, scrollTrackRef.current.clientHeight)
+			const { scrollTop, scrollHeight, clientHeight } = contentRef.current
+			const isAtTop = scrollTop === 0
+			const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1
+			setIsTop(isAtTop)
+			setIsBottom(isAtBottom)
 		}
 	}, [])
 	// Handle keepItBottom functionality
@@ -286,20 +291,32 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 			document.removeEventListener('mouseleave', handleThumbMouseup)
 		}
 	}, [handleThumbMousemove, handleThumbMouseup])
+	const { gap, ...restStyle } = style || {}
+	const isLeft = barPosition === 'left'
+
 	return (
 		<div
 			className='scrollbar_wrapper'
 			style={{
-				gridTemplate: `auto / 1fr ${barWidth}${units}`,
-				...style,
+				...restStyle,
+				gridTemplate: isScrollable
+					? isLeft
+						? `auto / ${barWidth}${units} 1fr`
+						: `auto / 1fr ${barWidth}${units}`
+					: `auto / 1fr`,
+				gap: isScrollable ? gap : 0,
 			}}
 		>
 			<article
 				className='scrollbar_content'
 				ref={contentRef}
 				style={{
-					paddingRight: `${contentPadding}${units}`,
-					height: `${contentHeight}${units}`,
+					paddingRight:
+						isScrollable && !isLeft ? `${contentPadding}${units}` : 0,
+					paddingLeft: isScrollable && isLeft ? `${contentPadding}${units}` : 0,
+					order: isLeft ? 2 : 1,
+					height: 'auto',
+					...(contentHeight > 0 && { maxHeight: `${contentHeight}${units}` }),
 					...(mask &&
 						isScrollable && {
 							maskImage: isTop
@@ -322,6 +339,7 @@ export const Scrollbar = ({ children, ...props }: ScrollbarProps) => {
 			<div
 				className='scrollbar'
 				style={{
+					order: isLeft ? 1 : 2,
 					borderRadius: `${barRadius}${units}`,
 					boxShadow: `${barShadow}`,
 					display: isScrollable ? 'block' : 'none',

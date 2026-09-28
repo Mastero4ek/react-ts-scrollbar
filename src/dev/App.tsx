@@ -1,22 +1,18 @@
-import './assets/styles/main.scss';
+import './assets/styles/main.scss'
 
-import React, {
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useState } from 'react'
 
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
-import { Scrollbar } from '../Scrollbar';
-import copyDoneImage from './assets/images/copy-done.png';
-import copyImage from './assets/images/copy.png';
-import scrollImage from './assets/images/scroll-image.png';
-import { Accordion } from './components/Accordion.tsx';
-import { ColorPicker } from './components/ColorPicker.tsx';
-import { Input } from './components/Input.tsx';
-import { Spinner } from './components/Spinner.tsx';
+import { Scrollbar } from '../Scrollbar'
+import copyDoneImage from './assets/images/copy-done.png'
+import copyImage from './assets/images/copy.png'
+import scrollImage from './assets/images/scroll-image.png'
+import { Accordion } from './components/Accordion.tsx'
+import { ColorPicker } from './components/ColorPicker.tsx'
+import { Input } from './components/Input.tsx'
+import { Spinner } from './components/Spinner.tsx'
 
 const SyntaxHighlighterComponent = SyntaxHighlighter as any
 
@@ -71,6 +67,7 @@ const App = () => {
 		barBorderWidth: 2,
 		barBorderColor: '#666666',
 		barTransition: 0,
+		barPosition: 'right',
 	})
 
 	const [thumbSettings, setThumbSettings] = useState({
@@ -104,6 +101,7 @@ const App = () => {
 				barBorderWidth: 2,
 				barBorderColor: '#666666',
 				barTransition: 0,
+				barPosition: 'right',
 			},
 			thumbSettings: {
 				thumbWidth: 8,
@@ -165,6 +163,7 @@ const App = () => {
 			barBorderWidth: 2,
 			barBorderColor: '#666666',
 			barTransition: 0,
+			barPosition: 'right',
 		})
 		setThumbSettings({
 			thumbWidth: 8,
@@ -224,6 +223,7 @@ const App = () => {
 			/\s*barBorderColor='[^']*'/g,
 			/\s*barTransition=\{[^}]*\}/g,
 			/\s*thumbTransition=\{[^}]*\}/g,
+			/\s*barPosition='[^']*'/g,
 		]
 
 		return propPatterns.reduce(
@@ -305,11 +305,19 @@ const App = () => {
 			},
 		]
 
+		const positionProps = [
+			{
+				condition: barSettings.barPosition === 'right',
+				prop: `\tbarPosition='right'`,
+			},
+		]
+
 		const allProps = [
 			...transitionProps,
 			...scrollProps,
 			...imageProps,
 			...maskProps,
+			...positionProps,
 		]
 
 		for (const { condition, prop } of allProps) {
@@ -419,7 +427,7 @@ const App = () => {
 					<Accordion title='Content settings' className='actions-column'>
 						<div className='actions-column-item'>
 							<Input
-								label='Height'
+								label='Max Height'
 								type='range'
 								value={contentSettings.contentHeight}
 								max={300}
@@ -480,6 +488,24 @@ const App = () => {
 
 					<Accordion title='Bar settings' className='actions-column'>
 						<div className='actions-item'>
+							<Input
+								type='checkbox'
+								checked={barSettings.barPosition === 'right'}
+								onChange={value =>
+									setBarSettings(prev => ({
+										...prev,
+										barPosition: value ? 'right' : 'left',
+									}))
+								}
+								label='Position: Right'
+							/>
+						</div>
+
+						<div />
+						<div />
+						<div />
+
+						<div className='actions-item'>
 							<ColorPicker
 								label='Color'
 								value={barSettings.barColor}
@@ -517,8 +543,6 @@ const App = () => {
 								onToggle={setOpenColorPicker}
 							/>
 						</div>
-
-						<div className='actions-item'></div>
 
 						<div className='actions-column-item'>
 							<Input
@@ -764,6 +788,7 @@ const App = () => {
 							thumbWidth={thumbSettings.thumbWidth}
 							barRadius={barSettings.barRadius}
 							thumbRadius={thumbSettings.thumbRadius}
+							barPosition={barSettings.barPosition as 'left' | 'right'}
 							onScrollTop={() =>
 								scrollSettings.isScrollTop && alert('Top reached')
 							}

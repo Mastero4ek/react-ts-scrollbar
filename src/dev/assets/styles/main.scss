@@ -138,9 +138,11 @@ html {
 			flex-direction: column;
 			gap: 10px;
 			width: 100%;
+			list-style: none;
 		}
 
 		&-list-item {
+			list-style: none;
 			text-align: center;
 			text-transform: uppercase;
 			padding: 5px 10px;
