@@ -1,18 +1,30 @@
+#!/usr/bin/env sh
+set -eu
+
+# Portable in-place sed (GNU + BSD)
+sed_i() {
+	_expr=$1
+	_file=$2
+	_tmp="${_file}.tmp"
+	sed "$_expr" "$_file" > "$_tmp"
+	mv "$_tmp" "$_file"
+}
+
 # Find all .js files in dist/esm and subdirectories
-find ./dist/esm -name "*.js" -type f | while read file; do
-  echo "Updating $file contents..."
-  sed -i '' "s/\.js'/\.mjs'/g" "$file"
-  sed -i '' "s/\.js\"/\.mjs\"/g" "$file"
-  sed -i '' "s/\.js;/\.mjs;/g" "$file"
-  echo "Renaming $file to ${file%.js}.mjs..."
-  mv "$file" "${file%.js}.mjs"
+find ./dist/esm -name "*.js" -type f | while IFS= read -r file; do
+	echo "Updating $file contents..."
+	sed_i "s/\.js'/\.mjs'/g" "$file"
+	sed_i "s/\.js\"/\.mjs\"/g" "$file"
+	sed_i "s/\.js;/\.mjs;/g" "$file"
+	echo "Renaming $file to ${file%.js}.mjs..."
+	mv "$file" "${file%.js}.mjs"
 done
 
 # Update import paths in all .mjs files
-find ./dist/esm -name "*.mjs" -type f | while read file; do
-  echo "Updating import paths in $file..."
-  sed -i '' "s/from \"\.\/Scrollbar\"/from \"\.\/Scrollbar\/index\.mjs\"/g" "$file"
-  sed -i '' "s/from '\.\/Scrollbar'/from '\.\/Scrollbar\/index\.mjs'/g" "$file"
-  sed -i '' "s/from '\.\/styles'/from '\.\/styles\.mjs'/g" "$file"
-  sed -i '' "s/from \"\.\/styles\"/from \"\.\/styles\.mjs\"/g" "$file"
+find ./dist/esm -name "*.mjs" -type f | while IFS= read -r file; do
+	echo "Updating import paths in $file..."
+	sed_i 's|from "\./Scrollbar"|from "./Scrollbar/index.mjs"|g' "$file"
+	sed_i "s|from '\./Scrollbar'|from './Scrollbar/index.mjs'|g" "$file"
+	sed_i "s|from '\./styles'|from './styles.mjs'|g" "$file"
+	sed_i 's|from "\./styles"|from "./styles.mjs"|g' "$file"
 done

@@ -53,35 +53,48 @@ export const styles = `
 	left: 50%;
 	transform: translateX(-50%);
 	max-height: 100%;
+	touch-action: none;
 }
 .scrollbar_thumb:hover {
 	background: var(--thumb-hover-color) !important;
 }
-.scrollbar_thumb_image{
+.scrollbar_thumb_image {
 	position: absolute;
 	left: 50%;
 	transform: translateX(-50%);
 	max-height: 100%;
 	z-index: 100;
-	img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-	}
+	touch-action: none;
 }
-@keyframes fadeIn {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
+.scrollbar_thumb_image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	pointer-events: none;
 }
 `
-export const injectStyles = () => {
-	if (typeof document !== 'undefined') {
+
+const STYLE_ID = 'react-typescript-scrollbar-styles'
+let refCount = 0
+
+export const injectStyles = (): (() => void) => {
+	if (typeof document === 'undefined') {
+		return () => {}
+	}
+
+	refCount += 1
+
+	if (!document.getElementById(STYLE_ID)) {
 		const styleElement = document.createElement('style')
+		styleElement.id = STYLE_ID
 		styleElement.textContent = styles
 		document.head.appendChild(styleElement)
+	}
+
+	return () => {
+		refCount = Math.max(0, refCount - 1)
+		if (refCount === 0) {
+			document.getElementById(STYLE_ID)?.remove()
+		}
 	}
 }

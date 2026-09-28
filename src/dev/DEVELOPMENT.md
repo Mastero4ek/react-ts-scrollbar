@@ -49,7 +49,8 @@ The development server will start on `http://localhost:3000` and automatically o
 | -------------------- | ------------------------------------------------------- |
 | `npm run clean`      | Remove all build artifacts (dist and dist-demo folders) |
 | `npm run rename:esm` | Rename .js files to .mjs in ESM build                   |
-| `npm run deploy`     | Build and deploy demo to GitHub Pages                   |
+
+Demo deploy: push to `main` → GitHub Actions (local `gh-pages` / `npm run deploy` removed).
 
 ### Package Commands
 
@@ -156,7 +157,7 @@ You can monitor deployment progress in the **Actions** tab of your GitHub reposi
 
 ## 📋 Prerequisites
 
-- **Node.js**: >= 14.0.0
+- **Node.js**: `^20.19 || >=22.12` (Vite 8)
 - **npm**: Latest version
 - **Git**: For version control
 

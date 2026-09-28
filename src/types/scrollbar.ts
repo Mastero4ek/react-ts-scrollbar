@@ -1,4 +1,20 @@
-import React from 'react';
+import React from 'react'
+
+export type ScrollbarRef = {
+	readonly element: HTMLElement | null
+
+	get scrollTop(): number
+	set scrollTop(value: number)
+
+	readonly scrollHeight: number
+	readonly clientHeight: number
+	readonly scrollable: boolean
+
+	scrollTo(options?: ScrollToOptions): void
+	scrollBy(options?: ScrollToOptions): void
+	scrollToTop(behavior?: ScrollBehavior): void
+	scrollToBottom(behavior?: ScrollBehavior): void
+}
 
 export type ScrollbarProps = {
 	style?: React.CSSProperties
@@ -36,4 +52,4 @@ export type ScrollbarProps = {
 
 	onScrollTop?: () => void
 	onScrollBottom?: () => void
-} & React.ComponentPropsWithoutRef<'div'>
+} & Omit<React.ComponentPropsWithoutRef<'div'>, 'children'>

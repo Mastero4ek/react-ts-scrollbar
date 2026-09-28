@@ -1,9 +1,6 @@
-import React, {
-  useEffect,
-  useState,
-} from 'react';
+import React, { useEffect, useState } from 'react'
 
-import { HexColorPicker } from 'react-colorful';
+import { HexColorPicker } from 'react-colorful'
 
 export const ColorPicker = ({
 	value,

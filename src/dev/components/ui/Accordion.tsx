@@ -1,10 +1,10 @@
-import '../assets/styles/main.scss';
+import '../../assets/styles/main.scss'
 
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
-import { motion } from 'framer-motion';
+import { motion } from 'framer-motion'
 
-import dropdownArrow from '../assets/images/dropdown-arrow.png';
+import dropdownArrow from '../../assets/images/dropdown-arrow.png'
 
 export const Accordion = ({
 	className,

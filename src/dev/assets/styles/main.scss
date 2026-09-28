@@ -235,7 +235,8 @@ html {
 	cursor: pointer;
 	position: relative;
 
-	input[type='checkbox'] {
+	input[type='checkbox'],
+	input[type='radio'] {
 		opacity: 0;
 		visibility: hidden;
 		width: 20px;
@@ -253,6 +254,14 @@ html {
 					transform: scale(1);
 				}
 			}
+		}
+	}
+
+	input[type='radio'] ~ .checkbox-mark {
+		border-radius: 50%;
+
+		&:after {
+			border-radius: 50%;
 		}
 	}
 

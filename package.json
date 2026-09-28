@@ -18,17 +18,16 @@
 		"README.md"
 	],
 	"scripts": {
-		"build:cjs": "tsc -p tsconfig.cjs.json && terser ./dist/cjs/index.js -o ./dist/cjs/index.js --compress --mangle",
-		"build:esm": "tsc -p tsconfig.esm.json && npm run rename:esm && terser ./dist/esm/index.mjs -o ./dist/esm/index.mjs --compress --mangle",
+		"build:cjs": "tsc -p tsconfig.cjs.json && sh ./scripts/minify-js.sh ./dist/cjs .js",
+		"build:esm": "tsc -p tsconfig.esm.json && npm run rename:esm && sh ./scripts/minify-js.sh ./dist/esm .mjs",
 		"build:types": "tsc -p tsconfig.types.json",
 		"build": "npm run build:cjs && npm run build:esm && npm run build:types",
 		"clean": "rimraf dist src/dev/dist-demo",
-		"rename:esm": "/bin/zsh ./scripts/fix-mjs.sh",
+		"rename:esm": "sh ./scripts/fix-mjs.sh",
 		"prepack": "npm run clean && npm run build",
 		"dev": "vite",
-		"build:dev": "NODE_ENV=development vite build --mode development",
-		"preview": "vite preview",
-		"deploy": "npm run build:dev && gh-pages -d dist-demo"
+		"build:dev": "vite build",
+		"preview": "vite preview"
 	},
 	"repository": {
 		"type": "git",
@@ -48,15 +47,14 @@
 	"peerDependencies": {
 		"@types/react": ">=18.2.0",
 		"@types/react-dom": ">=18.2.0",
-		"react": ">=16.8.0",
-		"react-dom": ">=16.8.0"
+		"react": ">=18.0.0",
+		"react-dom": ">=18.0.0"
 	},
 	"devDependencies": {
 		"@types/node": "^20.0.0",
+		"@types/react-syntax-highlighter": "^15.5.13",
 		"@vitejs/plugin-react": "^5.2.0",
 		"framer-motion": "^12.23.12",
-		"gh-pages": "^6.1.1",
-		"path": "^0.12.7",
 		"react": "^18.2.0",
 		"react-colorful": "^5.6.1",
 		"react-dom": "^18.2.0",
@@ -67,7 +65,7 @@
 		"vite": "^8.3.1"
 	},
 	"engines": {
-		"node": ">=14.0.0"
+		"node": ">=18.0.0"
 	},
 	"publishConfig": {
 		"access": "public"

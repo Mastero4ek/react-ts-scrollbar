@@ -7,7 +7,7 @@ A customizable scrollbar component for React applications built with TypeScript.
 - 🎨 Highly customizable scrollbar styling
 - 📦 TypeScript support with full type definitions
 - 🔄 ESM and CommonJS builds
-- ⚛️ React 16.8+ support
+- ⚛️ React 18+ support
 - 🚀 Smooth scrolling behavior
 - 🖱️ Track click to scroll
 - 🎯 Thumb drag to scroll
@@ -65,9 +65,10 @@ function App() {
 
 ### Behavior Props
 
-| Prop         | Type    | Default | Description                                                      |
-| ------------ | ------- | ------- | ---------------------------------------------------------------- |
-| keepItBottom | boolean | false   | Whether to keep the scrollbar at the bottom when content changes |
+| Prop         | Type               | Default | Description                                                      |
+| ------------ | ------------------ | ------- | ---------------------------------------------------------------- |
+| keepItBottom | boolean            | false   | Whether to keep the scrollbar at the bottom when content changes |
+| barPosition  | `'left' \| 'right'` | 'right' | Side of the track relative to the content                        |
 
 ### Track Styling Props
 
@@ -110,10 +111,60 @@ function App() {
 
 ### Event Callback Props
 
+Edge-triggered: fire once when the content **enters** the top/bottom edge, not on every scroll event while staying at the edge. Re-fires after leaving the edge and reaching it again.
+
 | Prop           | Type       | Default   | Description                                              |
 | -------------- | ---------- | --------- | -------------------------------------------------------- |
-| onScrollTop    | () => void | undefined | Callback function triggered when scrolling to the top    |
-| onScrollBottom | () => void | undefined | Callback function triggered when scrolling to the bottom |
+| onScrollTop    | () => void | undefined | Called when scroll position reaches the top              |
+| onScrollBottom | () => void | undefined | Called when scroll position reaches the bottom           |
+
+### Imperative API (`ref`)
+
+```tsx
+import { useRef } from 'react'
+import { Scrollbar, type ScrollbarRef } from 'react-typescript-scrollbar'
+
+function Example() {
+	const scrollbarRef = useRef<ScrollbarRef>(null)
+
+	return (
+		<>
+			<button type='button' onClick={() => scrollbarRef.current?.scrollToTop()}>
+				Top
+			</button>
+			<button
+				type='button'
+				onClick={() => scrollbarRef.current?.scrollToBottom('smooth')}
+			>
+				Bottom
+			</button>
+			<button
+				type='button'
+				onClick={() =>
+					scrollbarRef.current?.scrollTo({ top: 120, behavior: 'smooth' })
+				}
+			>
+				Go to 120px
+			</button>
+			<Scrollbar ref={scrollbarRef} style={{ height: '400px' }}>
+				{/* content */}
+			</Scrollbar>
+		</>
+	)
+}
+```
+
+| Member         | Type                                      | Description                                      |
+| -------------- | ----------------------------------------- | ------------------------------------------------ |
+| `element`      | `HTMLElement \| null`                     | Scroll viewport DOM node                         |
+| `scrollTop`    | `number` (get/set)                        | Current scroll offset                            |
+| `scrollHeight` | `number` (readonly)                       | Content scroll height                            |
+| `clientHeight` | `number` (readonly)                       | Viewport height                                  |
+| `scrollable`   | `boolean` (readonly)                      | Whether content overflows                        |
+| `scrollTo`     | `(options?: ScrollToOptions) => void`     | Same as element `scrollTo`                       |
+| `scrollBy`     | `(options?: ScrollToOptions) => void`     | Same as element `scrollBy`                       |
+| `scrollToTop`  | `(behavior?: ScrollBehavior) => void`     | Scroll to top (`behavior` default `'auto'`)      |
+| `scrollToBottom` | `(behavior?: ScrollBehavior) => void`   | Scroll to bottom (`behavior` default `'auto'`)   |
 
 ## Advanced Usage
 

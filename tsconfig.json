@@ -1,12 +1,10 @@
 {
 	"extends": "./tsconfig.base.json",
 	"compilerOptions": {
-		"sourceMap": true,
-		"outDir": "./dist/dev",
 		"noEmit": true,
 		"moduleResolution": "bundler",
 		"allowImportingTsExtensions": true
 	},
-	"include": ["src/dev/**/*", "src/Scrollbar/**/*", "src/types/**/*", "src/index.ts"],
+	"include": ["src/**/*"],
 	"exclude": ["node_modules", "dist"]
 }
