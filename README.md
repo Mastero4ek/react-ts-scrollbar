@@ -32,17 +32,17 @@ The demo includes:
 ## Installation
 
 ```bash
-npm install react-ts-scrollbar
+npm install react-typescript-scrollbar
 # or
-yarn add react-ts-scrollbar
+yarn add react-typescript-scrollbar
 # or
-pnpm add react-ts-scrollbar
+pnpm add react-typescript-scrollbar
 ```
 
 ## Quick Start
 
 ```tsx
-import { Scrollbar } from 'react-ts-scrollbar'
+import { Scrollbar } from 'react-typescript-scrollbar'
 
 function App() {
 	return (
@@ -120,7 +120,7 @@ function App() {
 ### Custom Styling Example
 
 ```tsx
-import { Scrollbar } from 'react-ts-scrollbar'
+import { Scrollbar } from 'react-typescript-scrollbar'
 
 function CustomScrollbar() {
 	return (
@@ -146,7 +146,7 @@ function CustomScrollbar() {
 ### With Smooth Transitions
 
 ```tsx
-import { Scrollbar } from 'react-ts-scrollbar'
+import { Scrollbar } from 'react-typescript-scrollbar'
 
 function SmoothScrollbar() {
 	return (
@@ -166,7 +166,7 @@ function SmoothScrollbar() {
 ### With Bottom Lock
 
 ```tsx
-import { Scrollbar } from 'react-ts-scrollbar'
+import { Scrollbar } from 'react-typescript-scrollbar'
 
 function ChatScrollbar() {
 	return (
@@ -180,7 +180,7 @@ function ChatScrollbar() {
 ### With Custom Thumb Image
 
 ```tsx
-import { Scrollbar } from 'react-ts-scrollbar'
+import { Scrollbar } from 'react-typescript-scrollbar'
 
 function ImageThumbScrollbar() {
 	return (
@@ -200,7 +200,7 @@ function ImageThumbScrollbar() {
 ### With Content Masking
 
 ```tsx
-import { Scrollbar } from 'react-ts-scrollbar'
+import { Scrollbar } from 'react-typescript-scrollbar'
 
 function MaskedScrollbar() {
 	return (
