@@ -6,6 +6,8 @@ import type {
 } from '../types/demoSettings'
 
 const PROP_PATTERNS = [
+	/\s*units='[^']*'/g,
+	/\s*style=\{\{[\s\S]*?\}\}/g,
 	/\s*contentPadding=\{[^}]*\}/g,
 	/\s*barWidth=\{[^}]*\}/g,
 	/\s*thumbWidth=\{[^}]*\}/g,
@@ -20,19 +22,24 @@ const PROP_PATTERNS = [
 	/\s*thumbHoverColor=\{[^}]*\}/g,
 	/\s*thumbHoverColor='[^']*'/g,
 	/\s*keepItBottom=\{[^}]*\}/g,
+	/\s*keepItEnd=\{[^}]*\}/g,
 	/\s*onScrollTop=\{[^}]*\}/g,
 	/\s*onScrollBottom=\{[^}]*\}/g,
+	/\s*onScrollStart=\{[^}]*\}/g,
+	/\s*onScrollEnd=\{[^}]*\}/g,
 	/\s*thumbImage=\{[^}]*\}/g,
 	/\s*thumbImageWidth=\{[^}]*\}/g,
 	/\s*thumbImageHeight=\{[^}]*\}/g,
 	/\s*mask=\{[^}]*\}/g,
 	/\s*maskSize=\{[^}]*\}/g,
 	/\s*contentHeight=\{[^}]*\}/g,
+	/\s*contentWidth=\{[^}]*\}/g,
 	/\s*barBorderWidth=\{[^}]*\}/g,
 	/\s*barBorderColor='[^']*'/g,
 	/\s*barTransition=\{[^}]*\}/g,
 	/\s*thumbTransition=\{[^}]*\}/g,
 	/\s*barPosition='[^']*'/g,
+	/\s*type='[^']*'/g,
 	/\s*overlay=\{[^}]*\}/g,
 	/\s*autoHide=\{[^}]*\}/g,
 	/\s*autoHideDelay=\{[^}]*\}/g,
@@ -62,20 +69,34 @@ const generateBasicProps = (
 	contentSettings: ContentSettings,
 	barSettings: BarSettings,
 	thumbSettings: ThumbSettings
-): string[] => [
-	`\tcontentHeight={${contentSettings.contentHeight}}`,
-	`\tcontentPadding={${contentSettings.contentPadding}}`,
-	`\tbarWidth={${barSettings.barWidth}}`,
-	`\tthumbWidth={${thumbSettings.thumbWidth}}`,
-	`\tbarRadius={${barSettings.barRadius}}`,
-	`\tthumbRadius={${thumbSettings.thumbRadius}}`,
-	`\tbarColor='${barSettings.barColor}'`,
-	`\tbarHoverColor='${barSettings.barHoverColor}'`,
-	`\tthumbColor='${thumbSettings.thumbColor}'`,
-	`\tthumbHoverColor='${thumbSettings.thumbHoverColor}'`,
-	`\tbarBorderWidth={${barSettings.barBorderWidth}}`,
-	`\tbarBorderColor='${barSettings.barBorderColor}'`,
-]
+): string[] => {
+	const sizeProp =
+		barSettings.type === 'horizontal'
+			? contentSettings.contentSizeAuto
+				? `\tcontentWidth={'auto'}`
+				: `\tcontentWidth={${contentSettings.contentWidth}}`
+			: contentSettings.contentSizeAuto
+				? `\tcontentHeight={'auto'}`
+				: `\tcontentHeight={${contentSettings.contentHeight}}`
+
+	return [
+		...(barSettings.type === 'horizontal' ? ["\ttype='horizontal'"] : []),
+		`\tunits='px'`,
+		sizeProp,
+		`\tcontentPadding={${contentSettings.contentPadding}}`,
+		`\tbarPosition='${barSettings.barPosition}'`,
+		`\tbarWidth={${barSettings.barWidth}}`,
+		`\tthumbWidth={${thumbSettings.thumbWidth}}`,
+		`\tbarRadius={${barSettings.barRadius}}`,
+		`\tthumbRadius={${thumbSettings.thumbRadius}}`,
+		`\tbarColor='${barSettings.barColor}'`,
+		`\tbarHoverColor='${barSettings.barHoverColor}'`,
+		`\tthumbColor='${thumbSettings.thumbColor}'`,
+		`\tthumbHoverColor='${thumbSettings.thumbHoverColor}'`,
+		`\tbarBorderWidth={${barSettings.barBorderWidth}}`,
+		`\tbarBorderColor='${barSettings.barBorderColor}'`,
+	]
+}
 
 const generateConditionalProps = (
 	scrollSettings: ScrollSettings,
@@ -97,14 +118,14 @@ const generateConditionalProps = (
 	]
 
 	const scrollProps = [
-		{ condition: scrollSettings.isKeepBottom, prop: '\tkeepItBottom={true}' },
+		{ condition: scrollSettings.isKeepEnd, prop: '\tkeepItEnd={true}' },
 		{
-			condition: scrollSettings.isScrollTop,
-			prop: "\tonScrollTop={() => alert('Top reached')}",
+			condition: scrollSettings.isScrollStart,
+			prop: "\tonScrollStart={() => alert('Start reached')}",
 		},
 		{
-			condition: scrollSettings.isScrollBottom,
-			prop: "\tonScrollBottom={() => alert('Bottom reached')}",
+			condition: scrollSettings.isScrollEnd,
+			prop: "\tonScrollEnd={() => alert('End reached')}",
 		},
 		{
 			condition: barSettings.overlay,
@@ -143,19 +164,11 @@ const generateConditionalProps = (
 		},
 	]
 
-	const positionProps = [
-		{
-			condition: true,
-			prop: `\tbarPosition='${barSettings.barPosition}'`,
-		},
-	]
-
 	const allProps = [
 		...transitionProps,
 		...scrollProps,
 		...imageProps,
 		...maskProps,
-		...positionProps,
 	]
 
 	for (const { condition, prop } of allProps) {

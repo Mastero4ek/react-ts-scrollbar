@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import type {
 	BarSettings,
@@ -11,6 +11,8 @@ import { ContentSettingsSection } from './ContentSettingsSection.tsx'
 import { DemoActions } from './DemoActions.tsx'
 import { ScrollSettingsSection } from './ScrollSettingsSection.tsx'
 import { ThumbSettingsSection } from './ThumbSettingsSection.tsx'
+
+type SectionKey = 'scroll' | 'content' | 'bar' | 'thumb'
 
 type Props = {
 	scrollSettings: ScrollSettings
@@ -31,6 +33,13 @@ type Props = {
 	onResetAll: () => void
 }
 
+const CLOSED_SECTIONS: Record<SectionKey, boolean> = {
+	scroll: false,
+	content: false,
+	bar: false,
+	thumb: false,
+}
+
 export const SettingsPanel = ({
 	scrollSettings,
 	setScrollSettings,
@@ -48,65 +57,118 @@ export const SettingsPanel = ({
 	onRemoveItem,
 	onClearItems,
 	onResetAll,
-}: Props) => (
-	<div className='settings'>
-		<h1>TypeScript React Scrollbar</h1>
+}: Props) => {
+	const [openSections, setOpenSections] =
+		useState<Record<SectionKey, boolean>>(CLOSED_SECTIONS)
 
-		<p className='units-info'>
-			This is demo use 'px' units! If you want to use 'rem' units, you need to
-			set the units prop to 'rem'. <br />
-			All props you can find in the{' '}
-			<a
-				href='https://github.com/Mastero4ek/react-ts-scrollbar/blob/main/README.md'
-				target='_blank'
-				rel='noopener noreferrer'
-			>
-				link
-			</a>
-			.
-		</p>
+	const allOpen = Object.values(openSections).every(Boolean)
 
-		<hr />
+	const setSectionOpen = (key: SectionKey, open: boolean) => {
+		setOpenSections(prev => ({ ...prev, [key]: open }))
+	}
 
-		<ScrollSettingsSection
-			value={scrollSettings}
-			onChange={setScrollSettings}
-		/>
+	const toggleAll = () => {
+		const next = !allOpen
+		setOpenSections({
+			scroll: next,
+			content: next,
+			bar: next,
+			thumb: next,
+		})
+	}
 
-		<hr />
+	return (
+		<div className='settings'>
+			<div className='settings-header'>
+				<div className='settings-header-title-row'>
+					<h1>TypeScript React Scrollbar</h1>
 
-		<ContentSettingsSection
-			value={contentSettings}
-			onChange={setContentSettings}
-		/>
+					<button
+						type='button'
+						className='settings-toggle-all'
+						onClick={toggleAll}
+					>
+						{allOpen ? 'Hide all' : 'Show all'}
+					</button>
+				</div>
 
-		<hr />
+				<p className='units-info'>
+					This is demo use 'px' units! If you want to use 'rem' units, you need
+					to set the units prop to 'rem'. <br />
+					All props you can find in the{' '}
+					<a
+						href='https://github.com/Mastero4ek/react-ts-scrollbar/blob/main/README.md'
+						target='_blank'
+						rel='noopener noreferrer'
+					>
+						link
+					</a>
+					.
+				</p>
+			</div>
 
-		<BarSettingsSection
-			value={barSettings}
-			onChange={setBarSettings}
-			openColorPicker={openColorPicker}
-			onToggleColorPicker={id => setOpenColorPicker(id)}
-		/>
+			<hr />
 
-		<hr />
+			<ScrollSettingsSection
+				value={scrollSettings}
+				onChange={setScrollSettings}
+				open={openSections.scroll}
+				onOpenChange={open => setSectionOpen('scroll', open)}
+			/>
 
-		<ThumbSettingsSection
-			value={thumbSettings}
-			onChange={setThumbSettings}
-			openColorPicker={openColorPicker}
-			onToggleColorPicker={id => setOpenColorPicker(id)}
-		/>
+			<hr />
 
-		<hr />
+			<ContentSettingsSection
+				value={contentSettings}
+				onChange={setContentSettings}
+				scrollbarType={barSettings.type}
+				open={openSections.content}
+				onOpenChange={open => setSectionOpen('content', open)}
+			/>
 
-		<DemoActions
-			itemsCount={itemsCount}
-			hasChanges={hasChanges}
-			onAddItem={onAddItem}
-			onRemoveItem={onRemoveItem}
-			onClearItems={onClearItems}
-			onResetAll={onResetAll}
-		/>
-	</div>
-)
+			<hr />
+
+			<BarSettingsSection
+				value={barSettings}
+				onChange={next => {
+					setBarSettings(prev => {
+						const updated = typeof next === 'function' ? next(prev) : next
+						if (updated.type !== prev.type) {
+							setContentSettings(c => ({
+								...c,
+								contentSizeAuto: updated.type === 'horizontal',
+							}))
+						}
+						return updated
+					})
+				}}
+				openColorPicker={openColorPicker}
+				onToggleColorPicker={id => setOpenColorPicker(id)}
+				open={openSections.bar}
+				onOpenChange={open => setSectionOpen('bar', open)}
+			/>
+			<hr />
+
+			<ThumbSettingsSection
+				value={thumbSettings}
+				onChange={setThumbSettings}
+				scrollbarType={barSettings.type}
+				openColorPicker={openColorPicker}
+				onToggleColorPicker={id => setOpenColorPicker(id)}
+				open={openSections.thumb}
+				onOpenChange={open => setSectionOpen('thumb', open)}
+			/>
+
+			<hr />
+
+			<DemoActions
+				itemsCount={itemsCount}
+				hasChanges={hasChanges}
+				onAddItem={onAddItem}
+				onRemoveItem={onRemoveItem}
+				onClearItems={onClearItems}
+				onResetAll={onResetAll}
+			/>
+		</div>
+	)
+}

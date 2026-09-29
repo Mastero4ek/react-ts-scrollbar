@@ -1,12 +1,16 @@
 type ScrollMetrics = {
-	scrollHeight: number
-	clientHeight: number
+	scrollHeight?: number
+	clientHeight?: number
 	scrollTop?: number
+	scrollWidth?: number
+	clientWidth?: number
+	scrollLeft?: number
 }
 
 type MockScrollHandle = {
 	setMetrics: (next: Partial<ScrollMetrics>) => void
 	getScrollTop: () => number
+	getScrollLeft: () => number
 }
 
 const resizeObservers: Array<{ callback: ResizeObserverCallback }> = []
@@ -16,7 +20,6 @@ export function resetResizeObservers() {
 }
 
 export function triggerAllResizeObservers() {
-	// Flush MockResizeObserver.instances from test/setup.ts
 	const MockRO = globalThis.ResizeObserver as unknown as {
 		instances?: Array<{ callback: ResizeObserverCallback }>
 	}
@@ -35,11 +38,18 @@ export function mockScrollable(
 	metrics: ScrollMetrics
 ): MockScrollHandle {
 	let scrollTop = metrics.scrollTop ?? 0
-	let scrollHeight = metrics.scrollHeight
-	let clientHeight = metrics.clientHeight
+	let scrollHeight = metrics.scrollHeight ?? 0
+	let clientHeight = metrics.clientHeight ?? 0
+	let scrollLeft = metrics.scrollLeft ?? 0
+	let scrollWidth = metrics.scrollWidth ?? 0
+	let clientWidth = metrics.clientWidth ?? 0
 
-	const clamp = (value: number) => {
+	const clampY = (value: number) => {
 		const max = Math.max(0, scrollHeight - clientHeight)
+		return Math.max(0, Math.min(value, max))
+	}
+	const clampX = (value: number) => {
+		const max = Math.max(0, scrollWidth - clientWidth)
 		return Math.max(0, Math.min(value, max))
 	}
 
@@ -60,7 +70,23 @@ export function mockScrollable(
 			configurable: true,
 			get: () => scrollTop,
 			set: (value: number) => {
-				scrollTop = clamp(value)
+				scrollTop = clampY(value)
+				dispatchScroll()
+			},
+		},
+		scrollWidth: {
+			configurable: true,
+			get: () => scrollWidth,
+		},
+		clientWidth: {
+			configurable: true,
+			get: () => clientWidth,
+		},
+		scrollLeft: {
+			configurable: true,
+			get: () => scrollLeft,
+			set: (value: number) => {
+				scrollLeft = clampX(value)
 				dispatchScroll()
 			},
 		},
@@ -68,9 +94,15 @@ export function mockScrollable(
 			configurable: true,
 			value: (options?: ScrollToOptions | number, y?: number) => {
 				if (typeof options === 'number') {
-					scrollTop = clamp(typeof y === 'number' ? y : options)
-				} else if (options && typeof options.top === 'number') {
-					scrollTop = clamp(options.top)
+					scrollLeft = clampX(options)
+					if (typeof y === 'number') scrollTop = clampY(y)
+				} else if (options) {
+					if (typeof options.top === 'number') {
+						scrollTop = clampY(options.top)
+					}
+					if (typeof options.left === 'number') {
+						scrollLeft = clampX(options.left)
+					}
 				}
 				dispatchScroll()
 			},
@@ -79,11 +111,15 @@ export function mockScrollable(
 			configurable: true,
 			value: (options?: ScrollToOptions | number, y?: number) => {
 				if (typeof options === 'number') {
-					scrollTop = clamp(
-						scrollTop + (typeof y === 'number' ? y : options)
-					)
-				} else if (options && typeof options.top === 'number') {
-					scrollTop = clamp(scrollTop + options.top)
+					scrollLeft = clampX(scrollLeft + options)
+					if (typeof y === 'number') scrollTop = clampY(scrollTop + y)
+				} else if (options) {
+					if (typeof options.top === 'number') {
+						scrollTop = clampY(scrollTop + options.top)
+					}
+					if (typeof options.left === 'number') {
+						scrollLeft = clampX(scrollLeft + options.left)
+					}
 				}
 				dispatchScroll()
 			},
@@ -95,18 +131,28 @@ export function mockScrollable(
 			if (next.scrollHeight != null) scrollHeight = next.scrollHeight
 			if (next.clientHeight != null) clientHeight = next.clientHeight
 			if (next.scrollTop != null) scrollTop = next.scrollTop
+			if (next.scrollWidth != null) scrollWidth = next.scrollWidth
+			if (next.clientWidth != null) clientWidth = next.clientWidth
+			if (next.scrollLeft != null) scrollLeft = next.scrollLeft
 		},
 		getScrollTop: () => scrollTop,
+		getScrollLeft: () => scrollLeft,
 	}
 }
 
 export function mockElementSize(
 	el: HTMLElement,
-	size: { clientHeight: number; clientWidth?: number; top?: number }
+	size: {
+		clientHeight?: number
+		clientWidth?: number
+		top?: number
+		left?: number
+	}
 ) {
-	const clientHeight = size.clientHeight
+	const clientHeight = size.clientHeight ?? 12
 	const clientWidth = size.clientWidth ?? 12
 	const top = size.top ?? 0
+	const left = size.left ?? 0
 
 	Object.defineProperties(el, {
 		clientHeight: {
@@ -121,12 +167,12 @@ export function mockElementSize(
 
 	el.getBoundingClientRect = () =>
 		({
-			x: 0,
+			x: left,
 			y: top,
 			top,
-			left: 0,
+			left,
 			bottom: top + clientHeight,
-			right: clientWidth,
+			right: left + clientWidth,
 			width: clientWidth,
 			height: clientHeight,
 			toJSON() {

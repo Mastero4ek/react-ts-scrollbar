@@ -114,11 +114,7 @@ export const ColorPicker = ({
 
 			{isOpen && (
 				<div className='color-picker-table' onClick={e => e.stopPropagation()}>
-					<HexColorPicker
-						color={value}
-						onChange={handleColorChange}
-						style={{ width: '200px' }}
-					/>
+					<HexColorPicker color={value} onChange={handleColorChange} />
 				</div>
 			)}
 		</div>

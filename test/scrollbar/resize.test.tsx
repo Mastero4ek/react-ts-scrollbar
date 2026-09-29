@@ -34,6 +34,28 @@ describe('Scrollbar resize / scrollable', () => {
 			expect(ref.current!.scrollable).toBe(true)
 			expect(bar!.style.display).toBe('block')
 		})
+
+		it('keepItEnd sticks to end on resize; keepItBottom is alias', () => {
+			const end = renderScrollbar({
+				props: { keepItEnd: true },
+				metrics: { scrollHeight: 800, clientHeight: 200, scrollTop: 0 },
+			})
+			act(() => {
+				end.scroll.setMetrics({ scrollHeight: 1000, clientHeight: 200 })
+				triggerAllResizeObservers()
+			})
+			expect(end.scroll.getScrollTop()).toBe(800)
+
+			const legacy = renderScrollbar({
+				props: { keepItBottom: true },
+				metrics: { scrollHeight: 800, clientHeight: 200, scrollTop: 0 },
+			})
+			act(() => {
+				legacy.scroll.setMetrics({ scrollHeight: 1000, clientHeight: 200 })
+				triggerAllResizeObservers()
+			})
+			expect(legacy.scroll.getScrollTop()).toBe(800)
+		})
 	})
 
 	describe('error path', () => {

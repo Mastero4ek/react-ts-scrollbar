@@ -69,7 +69,9 @@ const App = () => {
 					onClearItems={() => setItems([])}
 					onResetAll={resetAll}
 				/>
+			</div>
 
+			<div className='preview-side'>
 				<Preview
 					items={items}
 					scrollSettings={scrollSettings}
@@ -77,14 +79,14 @@ const App = () => {
 					barSettings={barSettings}
 					thumbSettings={thumbSettings}
 				/>
-			</div>
 
-			<CodePanel
-				syntax={syntax}
-				isLoading={isLoading}
-				copySuccess={copySuccess}
-				onCopy={copyToClipboard}
-			/>
+				<CodePanel
+					syntax={syntax}
+					isLoading={isLoading}
+					copySuccess={copySuccess}
+					onCopy={copyToClipboard}
+				/>
+			</div>
 		</div>
 	)
 }

@@ -15,7 +15,7 @@ describe('Scrollbar overlay', () => {
 				'.scrollbar_wrapper'
 			) as HTMLElement
 			expect(wrapper.className).toContain('scrollbar_wrapper--overlay')
-			expect(wrapper.style.gridTemplate).toBe('auto / 1fr')
+			expect(wrapper.style.gridTemplate).toBe('max-content / 1fr')
 			expect(bar!.style.position || getComputedStyle(bar!).position).toBeTruthy()
 			expect(bar!.style.right).toBe('0px')
 		})
@@ -181,7 +181,7 @@ describe('Scrollbar autoHide', () => {
 			})
 
 			expect(bar!.style.display).toBe('none')
-			expect(wrapper.style.gridTemplate).toBe('auto / 1fr')
+			expect(wrapper.style.gridTemplate).toBe('max-content / 1fr')
 		})
 
 		it('accepts numeric autoHide as delay override', () => {
@@ -220,7 +220,7 @@ describe('Scrollbar autoHide', () => {
 	})
 })
 
-describe('Scrollbar type (prep)', () => {
+describe('Scrollbar type', () => {
 	describe('happy path', () => {
 		it('defaults to vertical and accepts explicit type=vertical', () => {
 			const a = renderScrollbar({
@@ -237,17 +237,12 @@ describe('Scrollbar type (prep)', () => {
 	})
 
 	describe('error path', () => {
-		it('warns when type=horizontal is not implemented', () => {
-			const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-			renderScrollbar({
-				props: { type: 'horizontal' },
+		it('falls back barPosition=top to right on vertical', () => {
+			const { bar } = renderScrollbar({
+				props: { type: 'vertical', overlay: true, barPosition: 'top' },
 				metrics: { scrollHeight: 800, clientHeight: 200, scrollTop: 100 },
 			})
-
-			expect(warn).toHaveBeenCalledWith(
-				expect.stringContaining('type="horizontal" is not implemented')
-			)
-			warn.mockRestore()
+			expect(bar!.style.right).toBe('0px')
 		})
 	})
 })

@@ -52,6 +52,36 @@ describe('Scrollbar edge-trigger callbacks', () => {
 			})
 			expect(onScrollBottom).toHaveBeenCalledTimes(2)
 		})
+
+		it('onScrollStart / onScrollEnd fire once on enter (axis-agnostic)', () => {
+			const onScrollStart = vi.fn()
+			const onScrollEnd = vi.fn()
+			const { viewport } = renderScrollbar({
+				props: { onScrollStart, onScrollEnd },
+				metrics: { scrollHeight: 800, clientHeight: 200, scrollTop: 100 },
+			})
+
+			act(() => {
+				viewport.scrollTo({ top: 0 })
+			})
+			expect(onScrollStart).toHaveBeenCalledTimes(1)
+			expect(onScrollEnd).not.toHaveBeenCalled()
+
+			act(() => {
+				viewport.scrollTo({ top: 0 })
+			})
+			expect(onScrollStart).toHaveBeenCalledTimes(1)
+
+			act(() => {
+				viewport.scrollTo({ top: 600 })
+			})
+			expect(onScrollEnd).toHaveBeenCalledTimes(1)
+
+			act(() => {
+				viewport.scrollTo({ top: 600 })
+			})
+			expect(onScrollEnd).toHaveBeenCalledTimes(1)
+		})
 	})
 
 	describe('error path', () => {

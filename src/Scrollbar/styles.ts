@@ -10,12 +10,23 @@ export const styles = `
 	bottom: 0;
 	height: 100%;
 }
+.scrollbar_wrapper--horizontal.scrollbar_wrapper--overlay .scrollbar {
+	top: auto;
+	bottom: auto;
+	left: 0;
+	right: 0;
+	height: auto;
+	width: 100%;
+}
 .scrollbar_content {
 	-ms-overflow-style: none;
 	overflow: auto;
 	scrollbar-width: none;
 	display: flex;
 	flex-direction: column;
+}
+.scrollbar_wrapper--horizontal .scrollbar_content {
+	flex-direction: row;
 }
 .scrollbar_content::-webkit-scrollbar {
 	display: none;
@@ -28,11 +39,21 @@ export const styles = `
 	position: relative;
 	z-index: 300;
 }
+.scrollbar_wrapper--horizontal .scrollbar {
+	width: 100%;
+	height: auto;
+}
 .scrollbar_track_and_thumb {
 	display: block;
 	height: 100%;
 	position: relative;
 	min-height: 10%;
+}
+.scrollbar_wrapper--horizontal .scrollbar_track_and_thumb {
+	width: 100%;
+	height: auto;
+	min-height: 0;
+	min-width: 10%;
 }
 .scrollbar_track {
 	bottom: 0;
@@ -40,6 +61,14 @@ export const styles = `
 	position: absolute;
 	top: 0;
 	height: 100%;
+}
+.scrollbar_wrapper--horizontal .scrollbar_track {
+	top: auto;
+	bottom: auto;
+	left: 0;
+	right: 0;
+	height: auto;
+	width: 100%;
 }
 .scrollbar_track::before {
 	content: '';
@@ -61,6 +90,13 @@ export const styles = `
 	max-height: 100%;
 	touch-action: none;
 }
+.scrollbar_wrapper--horizontal .scrollbar_thumb {
+	left: auto;
+	top: 50%;
+	transform: translateY(-50%);
+	max-height: none;
+	max-width: 100%;
+}
 .scrollbar_thumb:hover {
 	background: var(--thumb-hover-color) !important;
 }
@@ -71,6 +107,13 @@ export const styles = `
 	max-height: 100%;
 	z-index: 100;
 	touch-action: none;
+}
+.scrollbar_wrapper--horizontal .scrollbar_thumb_image {
+	left: auto;
+	top: 50%;
+	transform: translateY(-50%);
+	max-height: none;
+	max-width: 100%;
 }
 .scrollbar_thumb_image img {
 	width: 100%;

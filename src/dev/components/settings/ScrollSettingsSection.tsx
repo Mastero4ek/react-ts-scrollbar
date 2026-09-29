@@ -1,50 +1,73 @@
 import React from 'react'
 
+import type { ScrollSettings } from '../../types/demoSettings'
 import { Accordion } from '../ui/Accordion.tsx'
 import { Input } from '../ui/Input.tsx'
-import type { ScrollSettings } from '../../types/demoSettings'
+import { SettingsGroup } from '../ui/SettingsGroup.tsx'
 
 type Props = {
 	value: ScrollSettings
 	onChange: React.Dispatch<React.SetStateAction<ScrollSettings>>
+	open: boolean
+	onOpenChange: (open: boolean) => void
 }
 
-export const ScrollSettingsSection = ({ value, onChange }: Props) => (
-	<Accordion title='Scroll settings' open={true}>
-		<Input
-			type='checkbox'
-			checked={value.isScrollTop}
-			onChange={next =>
-				onChange(prev => ({
-					...prev,
-					isScrollTop: next as boolean,
-				}))
-			}
-			label='Follow scroll to top'
-		/>
+export const ScrollSettingsSection = ({
+	value,
+	onChange,
+	open,
+	onOpenChange,
+}: Props) => (
+	<Accordion
+		title='Scroll settings'
+		className='actions-stack'
+		open={open}
+		onOpenChange={onOpenChange}
+	>
+		<SettingsGroup title='Follow'>
+			<div className='actions'>
+				<div className='actions-item'>
+					<Input
+						type='checkbox'
+						checked={value.isScrollStart}
+						onChange={next =>
+							onChange(prev => ({
+								...prev,
+								isScrollStart: next as boolean,
+							}))
+						}
+						label='Follow scroll to start'
+					/>
+				</div>
 
-		<Input
-			type='checkbox'
-			checked={value.isScrollBottom}
-			onChange={next =>
-				onChange(prev => ({
-					...prev,
-					isScrollBottom: next as boolean,
-				}))
-			}
-			label='Follow scroll to bottom'
-		/>
+				<div className='actions-item'>
+					<Input
+						type='checkbox'
+						checked={value.isScrollEnd}
+						onChange={next =>
+							onChange(prev => ({
+								...prev,
+								isScrollEnd: next as boolean,
+							}))
+						}
+						label='Follow scroll to end'
+					/>
+				</div>
 
-		<Input
-			type='checkbox'
-			checked={value.isKeepBottom}
-			onChange={next =>
-				onChange(prev => ({
-					...prev,
-					isKeepBottom: next as boolean,
-				}))
-			}
-			label='Keep scrollbar at bottom'
-		/>
+				<div className='actions-item'>
+					<Input
+						type='checkbox'
+						checked={value.isKeepEnd}
+						onChange={next =>
+							onChange(prev => ({
+								...prev,
+								isKeepEnd: next as boolean,
+							}))
+						}
+						label='Keep scrollbar at end'
+					/>
+				</div>
+			</div>
+		</SettingsGroup>
 	</Accordion>
 )

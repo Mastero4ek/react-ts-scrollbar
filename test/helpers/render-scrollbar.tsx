@@ -13,9 +13,12 @@ import {
 export type RenderScrollbarOptions = {
 	props?: Partial<ScrollbarProps>
 	metrics?: {
-		scrollHeight: number
-		clientHeight: number
+		scrollHeight?: number
+		clientHeight?: number
 		scrollTop?: number
+		scrollWidth?: number
+		clientWidth?: number
+		scrollLeft?: number
 	}
 	children?: ReactNode
 }
@@ -33,6 +36,9 @@ const DEFAULT_METRICS = {
 	scrollHeight: 800,
 	clientHeight: 200,
 	scrollTop: 100,
+	scrollWidth: 0,
+	clientWidth: 0,
+	scrollLeft: 0,
 }
 
 export function renderScrollbar(
@@ -41,11 +47,17 @@ export function renderScrollbar(
 	const metrics = { ...DEFAULT_METRICS, ...options.metrics }
 	const { children: propsChildren, ...restProps } = options.props ?? {}
 	const ref = createRef<ScrollbarRef>()
+	const isHorizontal = restProps.type === 'horizontal'
 
 	const result = render(
-		<Scrollbar ref={ref} contentHeight={200} {...restProps}>
+		<Scrollbar
+			ref={ref}
+			contentHeight={isHorizontal ? 0 : 200}
+			contentWidth={isHorizontal ? 200 : 0}
+			{...restProps}
+		>
 			{options.children ?? propsChildren ?? (
-				<div data-testid='tall-content'>tall content</div>
+				<div data-testid='content'>content</div>
 			)}
 		</Scrollbar>
 	)
@@ -60,12 +72,21 @@ export function renderScrollbar(
 
 	const scroll = mockScrollable(viewport, metrics)
 	if (track) {
-		mockElementSize(track, { clientHeight: metrics.clientHeight })
+		if (isHorizontal) {
+			mockElementSize(track, {
+				clientWidth: metrics.clientWidth || 200,
+				clientHeight: 12,
+			})
+		} else {
+			mockElementSize(track, {
+				clientHeight: metrics.clientHeight || 200,
+				clientWidth: 12,
+			})
+		}
 	}
 
 	act(() => {
 		triggerAllResizeObservers()
-		// Sync edgeRef with mocked metrics (initial mount used jsdom zeros)
 		viewport.dispatchEvent(new Event('scroll'))
 	})
 

@@ -20,7 +20,7 @@ export const CodePanel = ({
 }: Props) => (
 	<div
 		className='container'
-		style={{ width: '550px', height: isLoading ? '466px' : 'auto' }}
+		style={{ width: '100%', height: isLoading ? '466px' : 'auto' }}
 	>
 		{isLoading ? (
 			<Spinner />

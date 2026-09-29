@@ -1,17 +1,20 @@
 export type ScrollSettings = {
-	isKeepBottom: boolean
-	isScrollBottom: boolean
-	isScrollTop: boolean
+	isKeepEnd: boolean
+	isScrollEnd: boolean
+	isScrollStart: boolean
 }
 
 export type ContentSettings = {
 	contentHeight: number
+	contentWidth: number
+	contentSizeAuto: boolean
 	contentPadding: number
 	isMask: boolean
 	maskSize: number
 }
 
 export type BarSettings = {
+	type: 'vertical' | 'horizontal'
 	barWidth: number
 	barRadius: number
 	barColor: string
@@ -19,7 +22,7 @@ export type BarSettings = {
 	barBorderWidth: number
 	barBorderColor: string
 	barTransition: number
-	barPosition: 'left' | 'right'
+	barPosition: 'left' | 'right' | 'top' | 'bottom'
 	overlay: boolean
 	autoHide: boolean
 	autoHideDelay: number

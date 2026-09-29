@@ -12,7 +12,8 @@ A customizable scrollbar component for React applications built with TypeScript.
 - 🖱️ Track click to scroll
 - 🎯 Thumb drag to scroll
 - 📐 Auto-resize handling
-- 🔒 Optional bottom scroll lock
+- ↕️ Vertical and horizontal scroll axes
+- 🔒 Optional end-edge scroll lock
 - 🪟 Overlay mode (track over content, no reserved column)
 - 👻 Auto-hide when idle
 - 🖼️ Custom thumb image support
@@ -57,24 +58,26 @@ function App() {
 
 ### Basic Props
 
-| Prop           | Type          | Default   | Description                                  |
-| -------------- | ------------- | --------- | -------------------------------------------- |
-| style          | CSSProperties | {}        | Custom styles for the scrollbar container    |
-| children       | ReactNode     | undefined | Content to be displayed inside the scrollbar |
-| units          | string        | 'px'      | CSS units to use for measurements            |
-| contentHeight  | number        | 300       | Maximum height of the content area            |
-| contentPadding | number        | 10        | Padding of the content area                  |
+| Prop           | Type               | Default   | Description                                                                  |
+| -------------- | ------------------ | --------- | ---------------------------------------------------------------------------- |
+| style          | CSSProperties      | {}        | Custom styles for the scrollbar container                                    |
+| children       | ReactNode          | undefined | Content to be displayed inside the scrollbar                                 |
+| units          | string             | 'px'      | CSS units to use for measurements                                            |
+| contentHeight  | `number \| 'auto'` | 300       | Max height (vertical). `'auto'` = fill parent height (parent needs a height) |
+| contentWidth   | `number \| 'auto'` | 0         | Max width (horizontal). `0` = no maxWidth; `'auto'` = fill parent width      |
+| contentPadding | number             | 10        | Padding of the content area                                                  |
 
 ### Behavior Props
 
-| Prop           | Type                 | Default | Description                                                                 |
-| -------------- | -------------------- | ------- | --------------------------------------------------------------------------- |
-| keepItBottom   | boolean              | false   | Whether to keep the scrollbar at the bottom when content changes            |
-| type           | `'vertical' \| 'horizontal'` | 'vertical' | Scroll axis. `horizontal` reserved (not implemented yet)             |
-| barPosition    | `'left' \| 'right'`  | 'right' | Side of the track relative to the content                                   |
-| overlay        | boolean              | false   | If true, track overlays content (no reserved grid column)                   |
-| autoHide       | `boolean \| number`  | false   | Hide track when idle. Number = delay ms override. Beside: column collapses while hidden |
-| autoHideDelay  | number               | 1500    | Idle delay in ms when `autoHide` is `true`                                  |
+| Prop          | Type                                     | Default    | Description                                                                            |
+| ------------- | ---------------------------------------- | ---------- | -------------------------------------------------------------------------------------- |
+| keepItEnd     | boolean                                  | false      | Stick to the end edge when content changes (bottom if vertical, right if horizontal)   |
+| keepItBottom  | boolean                                  | false      | Alias of `keepItEnd` (legacy)                                                          |
+| type          | `'vertical' \| 'horizontal'`             | 'vertical' | Scroll axis                                                                            |
+| barPosition   | `'left' \| 'right' \| 'top' \| 'bottom'` | 'right'    | Track side (`left`/`right` vertical; `top`/`bottom` horizontal)                        |
+| overlay       | boolean                                  | false      | If true, track overlays content (no reserved grid track)                               |
+| autoHide      | `boolean \| number`                      | false      | Hide track when idle. Number = delay ms override. Beside: track collapses while hidden |
+| autoHideDelay | number                                   | 1500       | Idle delay in ms when `autoHide` is `true`                                             |
 
 ### Track Styling Props
 
@@ -117,12 +120,14 @@ function App() {
 
 ### Event Callback Props
 
-Edge-triggered: fire once when the content **enters** the top/bottom edge, not on every scroll event while staying at the edge. Re-fires after leaving the edge and reaching it again.
+Edge-triggered: fire once when the content **enters** the start/end edge of the active axis, not on every scroll event while staying at the edge. Re-fires after leaving the edge and reaching it again. Prefer `onScrollStart` / `onScrollEnd`; `onScrollTop` / `onScrollBottom` are legacy aliases (same edges).
 
-| Prop           | Type       | Default   | Description                                              |
-| -------------- | ---------- | --------- | -------------------------------------------------------- |
-| onScrollTop    | () => void | undefined | Called when scroll position reaches the top              |
-| onScrollBottom | () => void | undefined | Called when scroll position reaches the bottom           |
+| Prop           | Type       | Default   | Description                               |
+| -------------- | ---------- | --------- | ----------------------------------------- |
+| onScrollStart  | () => void | undefined | Called when scroll reaches the start edge |
+| onScrollEnd    | () => void | undefined | Called when scroll reaches the end edge   |
+| onScrollTop    | () => void | undefined | Alias of `onScrollStart` (legacy)         |
+| onScrollBottom | () => void | undefined | Alias of `onScrollEnd` (legacy)           |
 
 ### Imperative API (`ref`)
 
@@ -135,14 +140,17 @@ function Example() {
 
 	return (
 		<>
-			<button type='button' onClick={() => scrollbarRef.current?.scrollToTop()}>
-				Top
+			<button
+				type='button'
+				onClick={() => scrollbarRef.current?.scrollToStart()}
+			>
+				Start
 			</button>
 			<button
 				type='button'
-				onClick={() => scrollbarRef.current?.scrollToBottom('smooth')}
+				onClick={() => scrollbarRef.current?.scrollToEnd('smooth')}
 			>
-				Bottom
+				End
 			</button>
 			<button
 				type='button'
@@ -160,17 +168,22 @@ function Example() {
 }
 ```
 
-| Member         | Type                                      | Description                                      |
-| -------------- | ----------------------------------------- | ------------------------------------------------ |
-| `element`      | `HTMLElement \| null`                     | Scroll viewport DOM node                         |
-| `scrollTop`    | `number` (get/set)                        | Current scroll offset                            |
-| `scrollHeight` | `number` (readonly)                       | Content scroll height                            |
-| `clientHeight` | `number` (readonly)                       | Viewport height                                  |
-| `scrollable`   | `boolean` (readonly)                      | Whether content overflows                        |
-| `scrollTo`     | `(options?: ScrollToOptions) => void`     | Same as element `scrollTo`                       |
-| `scrollBy`     | `(options?: ScrollToOptions) => void`     | Same as element `scrollBy`                       |
-| `scrollToTop`  | `(behavior?: ScrollBehavior) => void`     | Scroll to top (`behavior` default `'auto'`)      |
-| `scrollToBottom` | `(behavior?: ScrollBehavior) => void`   | Scroll to bottom (`behavior` default `'auto'`)   |
+| Member           | Type                                  | Description                                  |
+| ---------------- | ------------------------------------- | -------------------------------------------- |
+| `element`        | `HTMLElement \| null`                 | Scroll viewport DOM node                     |
+| `scrollTop`      | `number` (get/set)                    | Current scroll offset                        |
+| `scrollHeight`   | `number` (readonly)                   | Content scroll height                        |
+| `clientHeight`   | `number` (readonly)                   | Viewport height                              |
+| `scrollLeft`     | `number` (get/set)                    | Horizontal scroll offset                     |
+| `scrollWidth`    | `number` (readonly)                   | Content scroll width                         |
+| `clientWidth`    | `number` (readonly)                   | Viewport width                               |
+| `scrollable`     | `boolean` (readonly)                  | Whether content overflows on the active axis |
+| `scrollTo`       | `(options?: ScrollToOptions) => void` | Same as element `scrollTo`                   |
+| `scrollBy`       | `(options?: ScrollToOptions) => void` | Same as element `scrollBy`                   |
+| `scrollToTop`    | `(behavior?: ScrollBehavior) => void` | Scroll to top (vertical DOM)                 |
+| `scrollToBottom` | `(behavior?: ScrollBehavior) => void` | Scroll to bottom (vertical DOM)              |
+| `scrollToStart`  | `(behavior?: ScrollBehavior) => void` | Scroll to start of active axis               |
+| `scrollToEnd`    | `(behavior?: ScrollBehavior) => void` | Scroll to end of active axis                 |
 
 ## Advanced Usage
 
@@ -220,15 +233,15 @@ function SmoothScrollbar() {
 }
 ```
 
-### With Bottom Lock
+### With End-Edge Lock
 
 ```tsx
 import { Scrollbar } from 'react-typescript-scrollbar'
 
 function ChatScrollbar() {
 	return (
-		<Scrollbar keepItBottom={true} style={{ height: '400px' }}>
-			{/* Chat messages */}
+		<Scrollbar keepItEnd={true} style={{ height: '400px' }}>
+			{/* Chat messages — stays at end when content grows */}
 		</Scrollbar>
 	)
 }
@@ -271,7 +284,7 @@ function MaskedScrollbar() {
 ### Overlay + Auto Hide
 
 `overlay` — track over content (no layout shift).  
-`autoHide` — works with or without overlay; in beside mode the bar column collapses while hidden.
+`autoHide` — works with or without overlay; in beside mode the bar track collapses while hidden.
 
 ```tsx
 import { Scrollbar } from 'react-typescript-scrollbar'
@@ -283,7 +296,6 @@ function OverlayScrollbar() {
 			overlay
 			autoHide
 			autoHideDelay={1500}
-			// or: autoHide={800} — number overrides autoHideDelay
 		>
 			{/* Content */}
 		</Scrollbar>
@@ -291,7 +303,54 @@ function OverlayScrollbar() {
 }
 ```
 
-> `type='horizontal'` is reserved for a future axis; currently the component always scrolls vertically.
+### Horizontal
+
+```tsx
+import { Scrollbar } from 'react-typescript-scrollbar'
+
+function HorizontalScrollbar() {
+	return (
+		<Scrollbar
+			type='horizontal'
+			contentWidth={400}
+			barPosition='bottom'
+			style={{ width: '100%' }}
+		>
+			<div style={{ display: 'flex', width: 'max-content' }}>
+				{/* wide content */}
+			</div>
+		</Scrollbar>
+	)
+}
+```
+
+### Fill parent (`'auto'`)
+
+Parent must have a defined size on the scroll axis.
+
+```tsx
+import { Scrollbar } from 'react-typescript-scrollbar'
+
+function FillParentVertical() {
+	return (
+		<div style={{ height: 400 }}>
+			<Scrollbar contentHeight='auto'>{/* tall content */}</Scrollbar>
+		</div>
+	)
+}
+
+function FillParentHorizontal() {
+	return (
+		<div style={{ width: '100%' }}>
+			<Scrollbar type='horizontal' contentWidth='auto'>
+				<div style={{ display: 'flex', width: 'max-content' }}>
+					{/* wide content */}
+				</div>
+			</Scrollbar>
+		</div>
+	)
+}
+```
 
 ## Browser Support
 

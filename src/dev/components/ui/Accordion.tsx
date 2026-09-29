@@ -10,18 +10,28 @@ export const Accordion = ({
 	className,
 	children,
 	title,
-	open = false,
+	open,
+	onOpenChange,
 }: {
 	className?: string
 	children: React.ReactNode
 	title: string
 	open?: boolean
+	onOpenChange?: (open: boolean) => void
 }) => {
-	const [isOpen, setIsOpen] = useState(open)
+	const [uncontrolledOpen, setUncontrolledOpen] = useState(false)
+	const isControlled = typeof open === 'boolean' && !!onOpenChange
+	const isOpen = isControlled ? open : uncontrolledOpen
+
+	const toggle = () => {
+		const next = !isOpen
+		if (isControlled) onOpenChange(next)
+		else setUncontrolledOpen(next)
+	}
 
 	return (
 		<div className='actions-wrapper' style={{ gap: isOpen ? '20px' : '0' }}>
-			<div className='actions-header' onClick={() => setIsOpen(!isOpen)}>
+			<div className='actions-header' onClick={toggle}>
 				<h3>{title}</h3>
 
 				<img

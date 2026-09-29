@@ -35,7 +35,7 @@ describe('Scrollbar ref API', () => {
 			expect(ref.current!.scrollTop).toBe(10)
 		})
 
-		it('scrollToTop and scrollToBottom', () => {
+		it('scrollToTop / scrollToBottom / scrollToStart / scrollToEnd', () => {
 			const { ref } = renderScrollbar()
 
 			act(() => {
@@ -45,6 +45,16 @@ describe('Scrollbar ref API', () => {
 
 			act(() => {
 				ref.current!.scrollToTop()
+			})
+			expect(ref.current!.scrollTop).toBe(0)
+
+			act(() => {
+				ref.current!.scrollToEnd()
+			})
+			expect(ref.current!.scrollTop).toBe(600)
+
+			act(() => {
+				ref.current!.scrollToStart()
 			})
 			expect(ref.current!.scrollTop).toBe(0)
 		})
